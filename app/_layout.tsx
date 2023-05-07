@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import { BackgroundWrapper } from '@components';
 import { NativeBaseProvider } from 'native-base';
 
 export const unstable_settings = {

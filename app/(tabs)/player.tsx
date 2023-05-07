@@ -1,5 +1,5 @@
-import { Text } from 'react-native';
 import { BackgroundWrapper } from '@components';
+import { Text } from 'react-native';
 
 const Player = () => {
   return (

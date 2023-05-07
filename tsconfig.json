@@ -23,7 +23,8 @@
       "@errors": ["./src/errors"],
       "@configs": ["./src/configs"],
       "@constants": ["./src/constants"],
-      "@store": ["./src/store"]
+      "@store": ["./src/store"],
+      "@global": ["./src/global"]
     }
   },
   "exclude": ["node_modules", "babel.config.js"]
