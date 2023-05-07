@@ -16,7 +16,7 @@ export const backgroundSlice = createSlice({
   name: 'background',
   initialState,
   reducers: {
-    // toDo later if light mode compareSpecificity, switch paths depends on mode
+    // toDo later if light mode implemented, switch paths depends on mode
     setBackground: state => {
       state.bgImage = DARK_BG_PATHS[Math.floor(Math.random() * DARK_BG_PATHS.length)];
     },

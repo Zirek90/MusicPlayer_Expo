@@ -2,7 +2,7 @@ import { PropsWithChildren } from 'react';
 import { View, Box } from 'native-base';
 import { ImageBackground, ImageSourcePropType } from 'react-native';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { RootState } from '@store/store';
 
 export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
   const background = useSelector((state: RootState) => state.background.bgImage);

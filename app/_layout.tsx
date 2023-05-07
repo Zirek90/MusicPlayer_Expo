@@ -1,8 +1,8 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { NativeBaseProvider } from 'native-base';
 import { Provider, useDispatch } from 'react-redux';
-import { store } from '../src/store/store';
-import { useEffect } from 'react';
+import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
 
 export const unstable_settings = {
