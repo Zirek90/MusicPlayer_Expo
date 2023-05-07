@@ -1,20 +1,16 @@
+import { PropsWithChildren } from 'react';
 import { View, Box } from 'native-base';
-import { PropsWithChildren, useEffect, useState } from 'react';
-import { ImageBackground } from 'react-native';
-import { DARK_BG_PATHS } from '@global';
+import { ImageBackground, ImageSourcePropType } from 'react-native';
+import { useSelector } from 'react-redux';
+import { RootState } from '@store/store';
 
 export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
-  const [choosen, setChoosen] = useState(DARK_BG_PATHS[0]);
-
-  // toDo move saving image to store to only generate it once and have same for all screens
-  useEffect(() => {
-    setChoosen(DARK_BG_PATHS[Math.floor(Math.random() * DARK_BG_PATHS.length)]);
-  }, []);
+  const background = useSelector((state: RootState) => state.background.bgImage);
 
   return (
     <View flex={1} bgColor="black">
       <ImageBackground
-        source={choosen.path}
+        source={background?.path as ImageSourcePropType}
         resizeMode="cover"
         style={{
           flex: 1,
