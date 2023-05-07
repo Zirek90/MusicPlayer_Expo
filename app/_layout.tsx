@@ -1,4 +1,6 @@
 import { Stack } from 'expo-router';
+import { BackgroundWrapper } from '@components';
+import { NativeBaseProvider } from 'native-base';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -6,10 +8,10 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   return (
-    <>
+    <NativeBaseProvider>
       {/* {!loaded && <SplashScreen />} */}
       <RootLayoutNav />
-    </>
+    </NativeBaseProvider>
   );
 }
 

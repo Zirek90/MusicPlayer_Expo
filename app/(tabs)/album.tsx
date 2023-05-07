@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { Text } from 'react-native';
+import { BackgroundWrapper } from '@components';
 
 const Album = () => {
   return (
-    <View>
-      <Text>AlbumPage</Text>
-    </View>
+    <BackgroundWrapper>
+      <Text style={{ color: 'white' }}>AlbumPage</Text>
+    </BackgroundWrapper>
   );
 };
 
