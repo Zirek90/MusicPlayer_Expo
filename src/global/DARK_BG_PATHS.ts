@@ -1,4 +1,6 @@
-export const DARK_BG_PATHS = [
+import { BackgroundPaths } from '@types';
+
+export const DARK_BG_PATHS: BackgroundPaths[] = [
   {
     name: 'bg1',
     path: require('../assets/backgrounds/black_bg_1.png'),
