@@ -1,8 +1,7 @@
+import { DARK_BG_PATHS } from '@global';
 import { View, Box } from 'native-base';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { ImageBackground } from 'react-native';
-
-import { DARK_BG_PATHS } from '../../global';
 
 export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
   const [choosen, setChoosen] = useState(DARK_BG_PATHS[0]);
