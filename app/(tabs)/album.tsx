@@ -1,10 +1,9 @@
-import { BackgroundWrapper } from '@components';
-import { Text } from 'react-native';
+import { BackgroundWrapper, MusicList } from '@components';
 
 const Album = () => {
   return (
     <BackgroundWrapper>
-      <Text style={{ color: 'white' }}>AlbumPage</Text>
+      <MusicList />
     </BackgroundWrapper>
   );
 };
