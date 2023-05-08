@@ -24,5 +24,3 @@ export const backgroundSlice = createSlice({
 });
 
 export const { setBackground } = backgroundSlice.actions;
-
-export default backgroundSlice.reducer;
