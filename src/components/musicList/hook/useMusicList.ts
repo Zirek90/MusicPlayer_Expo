@@ -1,19 +1,45 @@
 import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import * as MediaLibrary from 'expo-media-library';
+import { Audio } from 'expo-av';
 import { getDirectory, getExtension } from '@utils';
 import { AMOUNT_OF_FILES, AVAILABLE_EXTENSIONS, DURATION } from '@constants';
-import { MusicFileList } from '@types';
+import type { MusicFileList } from '@types';
+import { playSong, stopSong } from '@store/reducers';
+import { SongStatus } from '@enums';
 
 export type useMusicListOutput = {
   music: MusicFileList[];
   openedDirectories: string[];
   handleToggleExpand: (key: string) => void;
+  handleSong: (id: string, filename: string, uri: string, status: SongStatus) => Promise<void>;
 };
 
 export const useMusicList = (): useMusicListOutput => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [music, setMusic] = useState<MusicFileList[]>([]);
   const [openedDirectories, setOpenedDirectories] = useState<string[]>([]);
+  const [currentSong, setCurrentSong] = useState<Audio.Sound>();
+  const dispatch = useDispatch();
+
+  // toDo move it to redux store
+  const handleSong = async (id: string, filename: string, uri: string, status: SongStatus) => {
+    if (status === SongStatus.STOP) {
+      currentSong?.unloadAsync();
+      dispatch(stopSong({ id, filename, uri, status }));
+      setCurrentSong(undefined);
+    } else {
+      if (currentSong) {
+        currentSong?.unloadAsync();
+      }
+      const { sound: playbackObject } = await Audio.Sound.createAsync(
+        { uri },
+        { shouldPlay: true },
+      );
+      dispatch(playSong({ id, filename, uri, status }));
+      setCurrentSong(playbackObject);
+    }
+  };
 
   useEffect(() => {
     const getPermission = async () => {
@@ -81,5 +107,5 @@ export const useMusicList = (): useMusicListOutput => {
     scanMusicFiles();
   }, [permissionGranted]);
 
-  return { music, openedDirectories, handleToggleExpand };
+  return { music, openedDirectories, handleToggleExpand, handleSong };
 };
