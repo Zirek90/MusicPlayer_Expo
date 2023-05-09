@@ -5,7 +5,7 @@ import { Accordion } from '../Accordion';
 import { AccordionItem } from '../AccordionItem';
 
 export const MusicList = () => {
-  const { music, openedDirectories, handleToggleExpand, handleSong } = useMusicList();
+  const { music, openedDirectories, handleToggleExpand } = useMusicList();
 
   return (
     <FlatList
@@ -24,11 +24,7 @@ export const MusicList = () => {
                 renderItem={({ item: musicFiles }) => (
                   <>
                     {musicFiles.map((musicFile: Asset) => (
-                      <AccordionItem
-                        key={musicFile.filename}
-                        data={musicFile}
-                        handleSong={handleSong}
-                      />
+                      <AccordionItem key={musicFile.filename} data={musicFile} />
                     ))}
                   </>
                 )}
