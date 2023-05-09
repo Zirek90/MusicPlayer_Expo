@@ -19,6 +19,7 @@ module.exports = function (api) {
             '@constants': './src/constants',
             '@store': './src/store',
             '@global': './src/global',
+            '@context': './src/context',
           },
         },
       ],

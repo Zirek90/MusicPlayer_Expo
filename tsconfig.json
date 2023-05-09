@@ -24,7 +24,8 @@
       "@configs": ["./src/configs"],
       "@constants": ["./src/constants"],
       "@store/*": ["./src/store/*"],
-      "@global": ["./src/global"]
+      "@global": ["./src/global"],
+      "@context": ["./src/context"]
     }
   },
   "exclude": ["node_modules", "babel.config.js"]

@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import backgroundReducer from './reducers/backgroundReducer';
+import { backgroundSlice, songSlice } from './reducers';
 
 export const store = configureStore({
   reducer: {
-    background: backgroundReducer,
+    background: backgroundSlice.reducer,
+    song: songSlice.reducer,
   },
 });
 
