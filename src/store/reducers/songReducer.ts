@@ -5,14 +5,14 @@ type initialStateProps = {
   id: string | null;
   filename: string | null;
   uri: string | null;
-  status: SongStatus;
+  songStatus: SongStatus;
 };
 
 const initialState: initialStateProps = {
   id: null,
   filename: null,
   uri: null,
-  status: SongStatus.STOP,
+  songStatus: SongStatus.STOP,
 };
 
 export const songSlice = createSlice({
@@ -24,11 +24,21 @@ export const songSlice = createSlice({
       return state;
     },
     stopSong: (state, action) => {
-      state.status = action.payload.status;
+      state.songStatus = action.payload.songStatus;
       state.id = null;
+      state.filename = null;
+      state.uri = null;
+      return state;
+    },
+    pauseSong: (state, action) => {
+      state.songStatus = action.payload.songStatus;
+      return state;
+    },
+    resumeSong: state => {
+      state.songStatus = SongStatus.PLAY;
       return state;
     },
   },
 });
 
-export const { playSong, stopSong } = songSlice.actions;
+export const { playSong, stopSong, pauseSong, resumeSong } = songSlice.actions;
