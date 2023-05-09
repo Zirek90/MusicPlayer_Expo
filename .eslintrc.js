@@ -11,6 +11,7 @@ module.exports = {
         'no-shadow': 'off',
         'no-undef': 'off',
         'import/order': 'off',
+        'no-case-declarations': 'off',
       },
     },
   ],
