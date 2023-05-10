@@ -26,14 +26,14 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
       borderWidth={1}>
       {sameId && (
         <LinearGradient
-          colors={['#61ae5c', '#195614']}
+          colors={[COLORS.progress_bar_start, COLORS.progress_bar_end]}
           start={[0.7, 0.5]}
           end={[1, 0]}
           style={{ position: 'absolute', top: 0, height: 5, width: `${songProgress}%` }}
         />
       )}
 
-      <Text color="white">
+      <Text>
         {trimString(data.filename)} - {durationToTime(data.duration)}
       </Text>
 
@@ -42,21 +42,25 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
           (sameId && (
             <>
               <AccordionItemController
-                color="red"
+                color={COLORS.control_stop}
                 name="stop"
                 handleAction={() => handleSong(SongStatus.STOP)}
               />
 
               {currentSong.songStatus !== SongStatus.PAUSE && (
                 <AccordionItemController
-                  color="red"
+                  color={COLORS.control_pause}
                   name="pause"
                   handleAction={() => handleSong(SongStatus.PAUSE)}
                 />
               )}
 
               <AccordionItemController
-                color={currentSong.songStatus !== SongStatus.PAUSE ? 'green' : 'white'}
+                color={
+                  currentSong.songStatus !== SongStatus.PAUSE
+                    ? COLORS.control_play_active
+                    : COLORS.control_play_inactive
+                }
                 name="play"
                 handleAction={() => handleSong(SongStatus.RESUME)}
               />
@@ -64,7 +68,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
           ))}
         {!sameId && (
           <AccordionItemController
-            color="white"
+            color={COLORS.control_play_inactive}
             name="play"
             handleAction={() => handleSong(SongStatus.PLAY, data.id, data.filename, data.uri)}
           />
