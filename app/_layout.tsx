@@ -7,6 +7,7 @@ import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
 import { SongContextProvider } from '@context';
+import { ThemeConfig } from '@configs';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -23,7 +24,7 @@ export default function RootLayout() {
   return (
     <Provider store={store}>
       <SongContextProvider>
-        <NativeBaseProvider>
+        <NativeBaseProvider theme={ThemeConfig}>
           <SafeAreaView style={{ flex: 1 }}>
             {/* {!loaded && <SplashScreen />} */}
             <RootLayoutNav />
