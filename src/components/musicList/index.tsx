@@ -3,9 +3,17 @@ import { Asset } from 'expo-media-library';
 import { useMusicList } from './hook/useMusicList';
 import { Accordion } from '../Accordion';
 import { AccordionItem } from '../AccordionItem';
+import { useCallback } from 'react';
 
 export const MusicList = () => {
   const { music, openedDirectories, handleToggleExpand } = useMusicList();
+
+  const renderSongItem = useCallback(
+    ({ item }: { item: Asset }) => <AccordionItem data={item} />,
+    [],
+  );
+
+  const songKeyExtractor = useCallback((item: Asset) => item.id, []);
 
   return (
     <FlatList
@@ -18,18 +26,15 @@ export const MusicList = () => {
             title={title}
             toggleExpand={() => handleToggleExpand(title)}
             expandAll={openedDirectories.includes(title)}>
-            {!!openedDirectories.includes(title) && (
-              <FlatList
-                data={Object.values(item)}
-                renderItem={({ item: musicFiles }) => (
-                  <>
-                    {musicFiles.map((musicFile: Asset) => (
-                      <AccordionItem key={musicFile.filename} data={musicFile} />
-                    ))}
-                  </>
-                )}
-              />
-            )}
+            {!!openedDirectories.includes(title) &&
+              Object.values(item).map((musicFiles, index) => (
+                <FlatList
+                  key={index} // there will be no deletion or creation of elements so index would do
+                  data={musicFiles}
+                  keyExtractor={songKeyExtractor}
+                  renderItem={renderSongItem}
+                />
+              ))}
           </Accordion>
         );
       }}
