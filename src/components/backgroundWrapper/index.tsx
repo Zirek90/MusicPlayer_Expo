@@ -9,7 +9,7 @@ export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
   const background = useSelector((state: RootState) => state.background.bgImage);
 
   return (
-    <View flex={1} bgColor="black">
+    <View flex={1} bgColor={COLORS.black}>
       <ImageBackground
         source={background?.path as ImageSourcePropType}
         resizeMode="cover"
