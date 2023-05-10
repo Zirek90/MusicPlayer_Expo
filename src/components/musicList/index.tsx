@@ -1,9 +1,9 @@
+import { useCallback } from 'react';
 import { FlatList } from 'native-base';
 import { Asset } from 'expo-media-library';
 import { useMusicList } from './hook/useMusicList';
 import { Accordion } from '../Accordion';
 import { AccordionItem } from '../AccordionItem';
-import { useCallback } from 'react';
 
 export const MusicList = () => {
   const { music, openedDirectories, handleToggleExpand } = useMusicList();
