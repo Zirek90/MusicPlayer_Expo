@@ -1,8 +1,6 @@
 import { Box } from 'native-base';
 import { COLORS } from '@global';
-import { MusicPlayerHeader } from '../MusicPlayerHeader';
-import { SongProgress } from '../SongProgress';
-import { PlayerControllers } from '../PlayerControllers';
+import { MusicPlayerHeader, SongProgress, PlayerControllers } from '@components';
 
 export const MusicPlayer = () => {
   return (

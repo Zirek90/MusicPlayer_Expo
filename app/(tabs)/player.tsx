@@ -1,4 +1,5 @@
-import { BackgroundWrapper, MusicPlayer } from '@components';
+import { BackgroundWrapper } from '@components';
+import { MusicPlayer } from '@screens';
 
 const Player = () => {
   return (
