@@ -1,5 +1,10 @@
-export { BackgroundWrapper } from './backgroundWrapper';
-export { MusicList } from './musicList';
+export { BackgroundWrapper } from './BackgroundWrapper';
 export { Accordion } from './Accordion';
 export { AccordionItem } from './AccordionItem';
-export { AccordionItemController } from './AccordionItemController';
+export { PressableController } from './PressableController';
+export { MusicPlayerHeader } from './MusicPlayerHeader';
+export { SongProgress } from './SongProgress';
+export { PlayerControllers } from './PlayerControllers';
+
+// PAGES
+export { MusicPlayer } from './MusicPlayer';

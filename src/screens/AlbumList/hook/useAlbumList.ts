@@ -2,17 +2,17 @@ import { useEffect, useState } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { getDirectory, getExtension } from '@utils';
 import { AMOUNT_OF_FILES, AVAILABLE_EXTENSIONS, DURATION } from '@constants';
-import type { MusicFileList } from '@types';
+import type { Album } from '@types';
 
-export type useMusicListOutput = {
-  music: MusicFileList[];
+export type useAlbumListOutput = {
+  albumList: Album[];
   openedDirectories: string[];
   handleToggleExpand: (key: string) => void;
 };
 
-export const useMusicList = (): useMusicListOutput => {
+export const useAlbumList = (): useAlbumListOutput => {
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const [music, setMusic] = useState<MusicFileList[]>([]);
+  const [albumList, setAlbumList] = useState<Album[]>([]);
   const [openedDirectories, setOpenedDirectories] = useState<string[]>([]);
 
   useEffect(() => {
@@ -33,35 +33,36 @@ export const useMusicList = (): useMusicListOutput => {
       file =>
         file.duration > DURATION && AVAILABLE_EXTENSIONS.includes(getExtension(file.filename)),
     );
-    const assignedMusicFiles = assignFilesToDirectories(filterWrongFiles);
-    const musicFilesArray = convertIntoArray(assignedMusicFiles);
 
-    setMusic(musicFilesArray);
+    const assignedMusicFiles = assignFilesToDirectories(filterWrongFiles);
+
+    setAlbumList(assignedMusicFiles);
   };
 
   const assignFilesToDirectories = (files: MediaLibrary.Asset[]) => {
-    return files.reduce((acc: MusicFileList, file) => {
+    return files.reduce((acc: Album[], file) => {
       const directory = getDirectory(file.uri);
-      if (!acc[directory]) {
-        acc[directory] = [file];
-      } else {
-        acc[directory].push(file);
-      }
-      return acc;
-    }, {});
-  };
+      const foundDirectory = acc.find(a => a.album === directory);
 
-  const convertIntoArray = (files: MusicFileList) => {
-    const formattedOutput = [];
-
-    for (const key in files) {
-      if (files.hasOwnProperty(key)) {
-        const newObject: MusicFileList = {};
-        newObject[key] = files[key];
-        formattedOutput.push(newObject);
+      if (foundDirectory) {
+        return acc.map(el => {
+          if (el.album === directory) {
+            return {
+              ...el,
+              items: [...el.items, file],
+            };
+          }
+          return el;
+        });
       }
-    }
-    return formattedOutput;
+      return [
+        ...acc,
+        {
+          album: directory,
+          items: [file],
+        },
+      ];
+    }, []);
   };
 
   const handleToggleExpand = (key: string) => {
@@ -81,5 +82,5 @@ export const useMusicList = (): useMusicListOutput => {
     scanMusicFiles();
   }, [permissionGranted]);
 
-  return { music, openedDirectories, handleToggleExpand };
+  return { albumList, openedDirectories, handleToggleExpand };
 };

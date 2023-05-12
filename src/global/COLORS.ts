@@ -1,6 +1,6 @@
 export const COLORS = {
   mode_background: 'rgba(35, 35, 35, 0.5)',
-  album_file_background: 'rgba(35, 35, 35, 0.8)',
+  mode_content_background: 'rgba(35, 35, 35, 0.8)',
   white: '#ffffff',
   black: '#000000',
   navigation_top_background: '#0f0f0f',
