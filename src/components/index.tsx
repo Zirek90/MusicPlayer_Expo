@@ -7,5 +7,4 @@ export { SongProgress } from './SongProgress';
 export { PlayerControllers } from './PlayerControllers';
 
 // PAGES
-export { MusicList } from './MusicList';
 export { MusicPlayer } from './MusicPlayer';
