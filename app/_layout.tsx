@@ -6,7 +6,7 @@ import { Audio } from 'expo-av';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
-import { SongContextProvider } from '@context';
+import { MusicContextProvider } from '@context';
 import { ThemeConfig } from '@configs';
 
 export const unstable_settings = {
@@ -23,14 +23,14 @@ export default function RootLayout() {
   });
   return (
     <Provider store={store}>
-      <SongContextProvider>
+      <MusicContextProvider>
         <NativeBaseProvider theme={ThemeConfig}>
           <SafeAreaView style={{ flex: 1 }}>
             {/* {!loaded && <SplashScreen />} */}
             <RootLayoutNav />
           </SafeAreaView>
         </NativeBaseProvider>
-      </SongContextProvider>
+      </MusicContextProvider>
     </Provider>
   );
 }

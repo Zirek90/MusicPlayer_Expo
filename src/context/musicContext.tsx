@@ -1,7 +1,7 @@
 import { PropsWithChildren, useState, createContext, useContext } from 'react';
 import { Audio } from 'expo-av';
-import { SongStatus } from '@enums';
 import { useDispatch } from 'react-redux';
+import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong } from '@store/reducers';
 import { calculateTimeLeft } from '@utils';
 
@@ -11,9 +11,9 @@ interface ContextState {
   handleSong: (songStatus: SongStatus, id?: string, filename?: string, uri?: string) => void;
 }
 
-const SongContext = createContext<ContextState>({} as ContextState);
+const MusicContext = createContext<ContextState>({} as ContextState);
 
-export const SongContextProvider = ({ children }: PropsWithChildren) => {
+export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [song, setSong] = useState<Audio.Sound>();
   const [songProgress, setSongProgress] = useState(0);
   const dispatch = useDispatch();
@@ -62,12 +62,12 @@ export const SongContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <SongContext.Provider value={{ song, songProgress, handleSong }}>
+    <MusicContext.Provider value={{ song, songProgress, handleSong }}>
       {children}
-    </SongContext.Provider>
+    </MusicContext.Provider>
   );
 };
 
-export const useSongContext = () => {
-  return useContext(SongContext);
+export const useMusicContext = () => {
+  return useContext(MusicContext);
 };
