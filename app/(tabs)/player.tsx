@@ -1,10 +1,9 @@
-import { BackgroundWrapper } from '@components';
-import { Text } from 'react-native';
+import { BackgroundWrapper, MusicPlayer } from '@components';
 
 const Player = () => {
   return (
     <BackgroundWrapper>
-      <Text>Player</Text>
+      <MusicPlayer />
     </BackgroundWrapper>
   );
 };

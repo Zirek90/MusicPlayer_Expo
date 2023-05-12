@@ -6,11 +6,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { durationToTime, trimString } from '@utils';
 import { COLORS } from '@global';
 import { SongStatus } from '@enums';
-import { useSongContext } from '@context';
-import { AccordionItemController } from '../AccordionItemController';
+import { useMusicContext } from '@context';
+import { PressableController } from '../PressableController';
 
 export const AccordionItem = ({ data }: { data: Asset }) => {
-  const { songProgress, handleSong } = useSongContext();
+  const { songProgress, handleSong } = useMusicContext();
   const currentSong = useSelector((state: RootState) => state.song);
   const sameId = currentSong.id === data.id;
 
@@ -21,7 +21,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
-      bgColor={COLORS.album_file_background}
+      bgColor={COLORS.mode_content_background}
       borderColor="gray.300"
       borderWidth={1}>
       {sameId && (
@@ -41,21 +41,21 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
         {!currentSong.id ||
           (sameId && (
             <>
-              <AccordionItemController
+              <PressableController
                 color={COLORS.control_stop}
                 name="stop"
                 handleAction={() => handleSong(SongStatus.STOP)}
               />
 
               {currentSong.songStatus !== SongStatus.PAUSE && (
-                <AccordionItemController
+                <PressableController
                   color={COLORS.control_pause}
                   name="pause"
                   handleAction={() => handleSong(SongStatus.PAUSE)}
                 />
               )}
 
-              <AccordionItemController
+              <PressableController
                 color={
                   currentSong.songStatus !== SongStatus.PAUSE
                     ? COLORS.control_play_active
@@ -67,7 +67,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
             </>
           ))}
         {!sameId && (
-          <AccordionItemController
+          <PressableController
             color={COLORS.control_play_inactive}
             name="play"
             handleAction={() => handleSong(SongStatus.PLAY, data.id, data.filename, data.uri)}

@@ -10,5 +10,12 @@ export const ThemeConfig = extendTheme({
         };
       },
     },
+    Heading: {
+      baseStyle: () => {
+        return {
+          color: COLORS.white,
+        };
+      },
+    },
   },
 });
