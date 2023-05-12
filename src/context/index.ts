@@ -1,1 +1,1 @@
-export { MusicContextProvider, useMusicContext } from './musicContext';
+export { MusicContextProvider, useMusicContext } from './MusicContext';
