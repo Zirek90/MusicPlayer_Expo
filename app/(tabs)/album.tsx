@@ -1,11 +1,10 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { BackgroundWrapper, MusicList } from '@components';
 
 const Album = () => {
   return (
-    <View>
-      <Text>AlbumPage</Text>
-    </View>
+    <BackgroundWrapper>
+      <MusicList />
+    </BackgroundWrapper>
   );
 };
 
