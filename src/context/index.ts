@@ -1,2 +1,1 @@
-export { MusicContextProvider, useMusicContext } from './MusicContext';
-console.log();
+export { MusicContextProvider, useMusicContext } from './Music_Context';
