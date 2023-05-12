@@ -1,5 +1,5 @@
+export { BackgroundWrapper } from './BackgroundWrapper';
 export { Accordion } from './Accordion';
-export { BackgroundWrapper } from './Background_Wrapper';
 export { AccordionItem } from './AccordionItem';
 export { PressableController } from './PressableController';
 export { MusicPlayerHeader } from './MusicPlayerHeader';
