@@ -1,11 +1,11 @@
-import { BackgroundWrapper } from '@components';
-import { Text } from 'react-native';
+import { View, Text } from 'react-native';
+import React from 'react';
 
 const PlaylistPage = () => {
   return (
-    <BackgroundWrapper>
+    <View>
       <Text>PlaylistPage</Text>
-    </BackgroundWrapper>
+    </View>
   );
 };
 

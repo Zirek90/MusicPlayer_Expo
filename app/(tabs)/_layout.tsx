@@ -1,6 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { COLORS } from '@global';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
@@ -11,17 +10,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   return (
-    <Tabs
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: COLORS.navigation_top_background,
-        },
-        headerTitleAlign: 'center',
-        headerTintColor: COLORS.white,
-        tabBarStyle: {
-          backgroundColor: COLORS.black,
-        },
-      }}>
+    <Tabs>
       <Tabs.Screen
         name="album"
         options={{
