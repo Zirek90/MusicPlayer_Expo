@@ -1,18 +1,42 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Box, HStack, Text, Slider } from 'native-base';
 
-export const SongProgress = () => {
-  const [currentValue, setCurrentValue] = useState(0);
+type SongProgresProps = {
+  songProgress: number;
+  handleSongProgress: (progress: number) => void;
+};
 
-  const handleCurrentValue = (val: number) => setCurrentValue(val);
+export const SongProgress = ({ songProgress, handleSongProgress }: SongProgresProps) => {
+  const [currentValue, setCurrentValue] = useState(songProgress);
+  const [isDragActive, setIsDragActive] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+
+  // toDo optimize this code as it still seems not so responsive
+  useEffect(() => {
+    if (isDragActive) return;
+    setCurrentValue(songProgress);
+  }, [songProgress, isDragActive]);
+
+  const handleSliderChange = (val: number, isOnEnd?: boolean) => {
+    setCurrentValue(val);
+    if (isOnEnd) {
+      handleSongProgress(val);
+      timer.current = setTimeout(() => setIsDragActive(false), 500); // to avoide effect of flickering
+    }
+  };
+
+  useEffect(() => {
+    return () => clearTimeout(timer.current);
+  }, []);
 
   return (
     <Box px={5} my={2}>
       <Slider
         value={currentValue}
         colorScheme="emerald"
-        onChange={handleCurrentValue}
-        onChangeEnd={v => console.log({ v })}>
+        onTouchStart={() => setIsDragActive(true)}
+        onChange={handleSliderChange}
+        onChangeEnd={v => handleSliderChange(v, true)}>
         <Slider.Track>
           <Slider.FilledTrack />
         </Slider.Track>

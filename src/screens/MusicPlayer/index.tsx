@@ -1,8 +1,10 @@
 import { Box } from 'native-base';
 import { COLORS } from '@global';
 import { MusicPlayerHeader, SongProgress, PlayerControllers } from '@components';
+import { useMusicContext } from '@context';
 
 export const MusicPlayer = () => {
+  const { songProgress, handleSongProgress } = useMusicContext();
   return (
     <Box
       bgColor={COLORS.mode_background}
@@ -13,7 +15,7 @@ export const MusicPlayer = () => {
       right={2}
       left={2}>
       <MusicPlayerHeader />
-      <SongProgress />
+      <SongProgress songProgress={songProgress} handleSongProgress={handleSongProgress} />
       <PlayerControllers />
     </Box>
   );
