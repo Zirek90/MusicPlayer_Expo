@@ -3,7 +3,7 @@ import { Box, HStack, Text, Slider } from 'native-base';
 
 type SongProgresProps = {
   songProgress: number;
-  handleSongProgress: (progress: number) => void;
+  handleSongProgress: (progress: number) => Promise<void>;
 };
 
 export const SongProgress = ({ songProgress, handleSongProgress }: SongProgresProps) => {

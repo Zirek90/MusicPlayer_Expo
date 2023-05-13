@@ -8,8 +8,13 @@ import { calculateSongPosition, calculateTimeLeft } from '@utils';
 interface ContextState {
   song?: Audio.Sound;
   songProgress: number;
-  handleSong: (songStatus: SongStatus, id?: string, filename?: string, uri?: string) => void;
-  handleSongProgress: (progress: number) => void;
+  handleSong: (
+    songStatus: SongStatus,
+    id?: string,
+    filename?: string,
+    uri?: string,
+  ) => Promise<void>;
+  handleSongProgress: (progress: number) => Promise<void>;
 }
 
 const MusicContext = createContext<ContextState>({} as ContextState);
@@ -28,7 +33,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   ) => {
     switch (songStatus) {
       case SongStatus.PLAY:
-        song && song?.unloadAsync();
+        song && (await song?.unloadAsync());
         const { sound } = await Audio.Sound.createAsync(
           { uri: uri! },
           { shouldPlay: true },
@@ -47,17 +52,17 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         setSong(sound);
         break;
       case SongStatus.RESUME:
-        song?.playAsync();
+        await song?.playAsync();
         dispatch(resumeSong());
         break;
       case SongStatus.STOP:
-        song?.unloadAsync();
+        await song?.unloadAsync();
         dispatch(stopSong({ songStatus }));
         setSongProgress(0);
         setSong(undefined);
         break;
       case SongStatus.PAUSE:
-        song?.pauseAsync();
+        await song?.pauseAsync();
         dispatch(pauseSong({ songStatus }));
         break;
       default:
@@ -65,10 +70,10 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const handleSongProgress = (progress: number) => {
+  const handleSongProgress = async (progress: number) => {
     if (song) {
       const currentPositon = calculateSongPosition(progress, currentSongDuration);
-      song.setPositionAsync(currentPositon);
+      await song.setPositionAsync(currentPositon);
     }
   };
 
