@@ -4,4 +4,6 @@ export enum SongStatus {
   'PAUSE' = 'pause',
   'RESUME' = 'resume',
   'LOOP' = 'loop',
+  'NEXT' = 'next',
+  'PREVIOUS' = 'previous',
 }

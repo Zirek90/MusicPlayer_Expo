@@ -26,7 +26,7 @@ export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
           size={45}
           color="grey"
           name="skip-previous-circle-outline"
-          handleAction={() => {}}
+          handleAction={() => handleSong(SongStatus.PREVIOUS)}
         />
       </HStack>
       <HStack>
@@ -56,7 +56,7 @@ export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
           size={45}
           color="grey"
           name="skip-next-circle-outline"
-          handleAction={() => {}}
+          handleAction={() => handleSong(SongStatus.NEXT)}
         />
         <PressableController size={25} color="grey" name="playlist-plus" handleAction={() => {}} />
       </HStack>

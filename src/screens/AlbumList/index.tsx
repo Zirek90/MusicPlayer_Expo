@@ -9,7 +9,9 @@ export const AlbumList = () => {
   const { albumList, openedDirectories, handleToggleExpand } = useAlbumList();
 
   const renderSongItem = useCallback(
-    ({ item }: { item: Asset }) => <AccordionItem data={item} />,
+    (item: Asset, album: Album, index: number) => (
+      <AccordionItem data={item} album={album} index={index} />
+    ),
     [],
   );
 
@@ -18,14 +20,18 @@ export const AlbumList = () => {
   const albumKeyExtractor = useCallback((item: Album) => item.album, []);
 
   const renderAlbumItem = useCallback(
-    ({ item }: { item: Album }) => (
+    ({ item: albumItem }: { item: Album }) => (
       <Accordion
-        key={item.album}
-        title={item.album}
-        toggleExpand={() => handleToggleExpand(item.album)}
-        expandAll={openedDirectories.includes(item.album)}>
-        {openedDirectories.includes(item.album) && (
-          <FlatList data={item.items} keyExtractor={songKeyExtractor} renderItem={renderSongItem} />
+        key={albumItem.album}
+        title={albumItem.album}
+        toggleExpand={() => handleToggleExpand(albumItem.album)}
+        expandAll={openedDirectories.includes(albumItem.album)}>
+        {openedDirectories.includes(albumItem.album) && (
+          <FlatList
+            data={albumItem.items}
+            keyExtractor={songKeyExtractor}
+            renderItem={({ item, index }) => renderSongItem(item, albumItem, index)}
+          />
         )}
       </Accordion>
     ),

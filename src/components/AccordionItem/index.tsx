@@ -8,11 +8,24 @@ import { COLORS } from '@global';
 import { SongStatus } from '@enums';
 import { useMusicContext } from '@context';
 import { PressableController } from '../PressableController';
+import { Album } from '@types';
 
-export const AccordionItem = ({ data }: { data: Asset }) => {
-  const { songProgress, handleSong } = useMusicContext();
+type AccordionItemProps = {
+  data: Asset;
+  album: Album;
+  index: number;
+};
+
+export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
+  const { songProgress, handleSong, handleCurrentAlbum, handleSongIndex } = useMusicContext();
   const currentSong = useSelector((state: RootState) => state.song);
   const sameId = currentSong.id === data.id;
+
+  const handlePlay = () => {
+    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri);
+    handleCurrentAlbum(album);
+    handleSongIndex(index);
+  };
 
   return (
     <Box
@@ -70,7 +83,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
           <PressableController
             color={COLORS.control_play_inactive}
             name="play"
-            handleAction={() => handleSong(SongStatus.PLAY, data.id, data.filename, data.uri)}
+            handleAction={handlePlay}
           />
         )}
       </HStack>
