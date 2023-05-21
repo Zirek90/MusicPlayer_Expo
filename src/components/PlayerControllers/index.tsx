@@ -7,9 +7,13 @@ import { COLORS } from '@global';
 
 type PlayerControllersProps = {
   handleSong: (songStatus: SongStatus) => Promise<void>;
+  handleMusicPlayerPlay: () => void;
 };
 
-export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
+export const PlayerControllers = ({
+  handleSong,
+  handleMusicPlayerPlay,
+}: PlayerControllersProps) => {
   const currentSongStatus = useSelector((state: RootState) => state.song.songStatus);
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
@@ -48,7 +52,11 @@ export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
               : COLORS.control_play_inactive
           }
           name="play-circle-outline"
-          handleAction={() => handleSong(SongStatus.RESUME)}
+          handleAction={() =>
+            currentSongStatus === SongStatus.STOP
+              ? handleMusicPlayerPlay()
+              : handleSong(SongStatus.RESUME)
+          }
         />
       </HStack>
       <HStack alignItems="center">

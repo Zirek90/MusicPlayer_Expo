@@ -22,6 +22,7 @@ interface ContextState {
   handleSongProgress: (progress: number) => Promise<void>;
   handleCurrentAlbum: (album: Album) => void;
   handleSongIndex: (index: number) => void;
+  handleMusicPlayerPlay: () => void;
 }
 
 const MusicContext = createContext<ContextState>({} as ContextState);
@@ -106,6 +107,11 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
+  const handleMusicPlayerPlay = () => {
+    const currentSong = currentAlbum?.items[currentSongIndex]!;
+    handleSong(SongStatus.PLAY, currentSong.id, currentSong.filename, currentSong.uri);
+  };
+
   const handleSongProgress = async (progress: number) => {
     if (song) {
       const currentPositon = calculateSongPosition(progress, currentSongDuration);
@@ -152,6 +158,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         handleSongProgress,
         handleCurrentAlbum,
         handleSongIndex,
+        handleMusicPlayerPlay,
       }}>
       {children}
     </MusicContext.Provider>

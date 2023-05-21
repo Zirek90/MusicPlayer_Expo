@@ -22,9 +22,9 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
   const sameId = currentSong.id === data.id;
 
   const handlePlay = () => {
-    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri);
     handleCurrentAlbum(album);
     handleSongIndex(index);
+    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri);
   };
 
   return (
