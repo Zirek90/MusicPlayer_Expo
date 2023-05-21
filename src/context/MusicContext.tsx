@@ -15,6 +15,10 @@ interface ContextState {
     filename?: string,
     uri?: string,
   ) => Promise<void>;
+  songDetails: {
+    title: string;
+    album: string;
+  };
   handleSongProgress: (progress: number) => Promise<void>;
   handleCurrentAlbum: (album: Album) => void;
   handleSongIndex: (index: number) => void;
@@ -26,6 +30,10 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [song, setSong] = useState<Audio.Sound>();
   const [currentSongIndex, setSongIndex] = useState<number>(0);
   const [currentAlbum, setCurrentAlbum] = useState<Album | undefined>(undefined);
+  const [songDetails, setSongDetails] = useState({
+    title: '',
+    album: '',
+  });
   const [currentSongDuration, setCurrentSongDuration] = useState(0);
   const [songProgress, setSongProgress] = useState(0);
   const dispatch = useDispatch();
@@ -109,11 +117,21 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleSongIndex = (index: number) => setSongIndex(index);
 
+  useEffect(() => {
+    if (!currentAlbum) return;
+    const currentSong = currentAlbum.items[currentSongIndex];
+    setSongDetails({
+      title: currentSong.filename,
+      album: currentAlbum.album,
+    });
+  }, [currentAlbum, currentSongIndex]);
+
   return (
     <MusicContext.Provider
       value={{
         song,
         songProgress,
+        songDetails,
         handleSong,
         handleSongProgress,
         handleCurrentAlbum,
