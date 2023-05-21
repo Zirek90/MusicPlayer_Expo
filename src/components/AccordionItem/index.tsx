@@ -24,7 +24,7 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
   const handlePlay = () => {
     handleCurrentAlbum(album);
     handleSongIndex(index);
-    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri);
+    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration);
   };
 
   return (
@@ -47,7 +47,7 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
       )}
 
       <Text>
-        {trimString(data.filename)} - {durationToTime(data.duration)}
+        {trimString(data.filename)} - ({durationToTime(data.duration)})
       </Text>
 
       <HStack>

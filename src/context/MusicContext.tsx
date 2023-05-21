@@ -3,7 +3,7 @@ import { Audio } from 'expo-av';
 import { useDispatch } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
-import { addToStorage, calculateSongPosition, calculateTimeLeft, getFromStorage } from '@utils';
+import { addToStorage, calculateSongPosition, calculateProgress, getFromStorage } from '@utils';
 import { Album } from '@types';
 
 interface ContextState {
@@ -14,6 +14,7 @@ interface ContextState {
     id?: string,
     filename?: string,
     uri?: string,
+    duration?: number,
   ) => Promise<void>;
   songDetails: {
     title: string;
@@ -44,6 +45,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     id?: string,
     filename?: string,
     uri?: string,
+    duration?: number,
   ) => {
     switch (songStatus) {
       case SongStatus.PLAY:
@@ -53,16 +55,16 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
           { shouldPlay: true },
           status => {
             if (status.isLoaded) {
-              const duration = status.durationMillis! / 1000;
+              const totalDuration = status.durationMillis! / 1000;
               const currentPosition = status.positionMillis / 1000;
-              const timeLeft = calculateTimeLeft(duration, currentPosition);
-              setCurrentSongDuration(duration);
+              const timeLeft = calculateProgress(totalDuration, currentPosition);
               setSongProgress(timeLeft);
             }
           },
         );
 
-        dispatch(playSong({ id, filename, uri, songStatus }));
+        setCurrentSongDuration(duration!);
+        dispatch(playSong({ id, filename, uri, songStatus, duration }));
         setSong(sound);
         break;
       case SongStatus.RESUME:
@@ -92,7 +94,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         const previousSong = currentAlbum?.items[previousIndex]!;
         setSongIndex(previousIndex);
 
-        handleSong(SongStatus.PLAY, previousSong.id, previousSong.filename, previousSong.uri);
+        handleSong(
+          SongStatus.PLAY,
+          previousSong.id,
+          previousSong.filename,
+          previousSong.uri,
+          previousSong.duration,
+        );
         break;
       case SongStatus.NEXT:
         const nextIndex =
@@ -100,7 +108,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         const nextSong = currentAlbum?.items[nextIndex]!;
         setSongIndex(nextIndex);
 
-        handleSong(SongStatus.PLAY, nextSong.id, nextSong.filename, nextSong.uri);
+        handleSong(
+          SongStatus.PLAY,
+          nextSong.id,
+          nextSong.filename,
+          nextSong.uri,
+          nextSong.duration,
+        );
         break;
       default:
         break;
@@ -109,7 +123,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleMusicPlayerPlay = () => {
     const currentSong = currentAlbum?.items[currentSongIndex]!;
-    handleSong(SongStatus.PLAY, currentSong.id, currentSong.filename, currentSong.uri);
+    handleSong(
+      SongStatus.PLAY,
+      currentSong.id,
+      currentSong.filename,
+      currentSong.uri,
+      currentSong.duration,
+    );
   };
 
   const handleSongProgress = async (progress: number) => {
