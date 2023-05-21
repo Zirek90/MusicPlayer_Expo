@@ -30,7 +30,7 @@ const MusicContext = createContext<ContextState>({} as ContextState);
 
 export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [song, setSong] = useState<Audio.Sound>();
-  const [currentSongIndex, setSongIndex] = useState<number>(0);
+  const [currentSongIndex, setCurrentSongIndex] = useState<number>(0);
   const [currentAlbum, setCurrentAlbum] = useState<Album | undefined>(undefined);
   const [songDetails, setSongDetails] = useState({
     title: '',
@@ -59,6 +59,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
               const currentPosition = status.positionMillis / 1000;
               const timeLeft = calculateProgress(totalDuration, currentPosition);
               setSongProgress(timeLeft);
+
+              if (status.didJustFinish) handleSong(SongStatus.NEXT);
             }
           },
         );
@@ -92,7 +94,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       case SongStatus.PREVIOUS:
         const previousIndex = currentSongIndex === 0 ? 0 : currentSongIndex - 1;
         const previousSong = currentAlbum?.items[previousIndex]!;
-        setSongIndex(previousIndex);
+        setCurrentSongIndex(previousIndex);
 
         handleSong(
           SongStatus.PLAY,
@@ -104,9 +106,9 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         break;
       case SongStatus.NEXT:
         const nextIndex =
-          currentSongIndex === currentAlbum!.items.length ? 0 : currentSongIndex + 1;
+          currentSongIndex + 1 === currentAlbum!.items.length ? 0 : currentSongIndex + 1;
+        setCurrentSongIndex(nextIndex);
         const nextSong = currentAlbum?.items[nextIndex]!;
-        setSongIndex(nextIndex);
 
         handleSong(
           SongStatus.PLAY,
@@ -141,7 +143,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleCurrentAlbum = (album: Album) => setCurrentAlbum(album);
 
-  const handleSongIndex = (index: number) => setSongIndex(index);
+  const handleSongIndex = (index: number) => setCurrentSongIndex(index);
 
   const manageStorage = async () => {
     await addToStorage('album', currentAlbum!);
@@ -163,10 +165,15 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       const { album, songIndex } = await getFromStorage();
       if (!album) return;
       setCurrentAlbum(album);
-      setSongIndex(songIndex);
+      setCurrentSongIndex(songIndex);
     };
     fetchStoredData();
   }, []);
+
+  useEffect(() => {
+    // toDo debug why next song in case of last one is wrongly calculated
+    console.log({ currentSongIndex }, currentAlbum?.items.length);
+  }, [currentSongIndex, currentAlbum]);
 
   return (
     <MusicContext.Provider
