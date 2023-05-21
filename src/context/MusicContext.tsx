@@ -3,7 +3,7 @@ import { Audio } from 'expo-av';
 import { useDispatch } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
-import { calculateSongPosition, calculateTimeLeft } from '@utils';
+import { addToStorage, calculateSongPosition, calculateTimeLeft, getFromStorage } from '@utils';
 import { Album } from '@types';
 
 interface ContextState {
@@ -117,6 +117,11 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleSongIndex = (index: number) => setSongIndex(index);
 
+  const manageStorage = async () => {
+    await addToStorage('album', currentAlbum!);
+    await addToStorage('songIndex', currentSongIndex!);
+  };
+
   useEffect(() => {
     if (!currentAlbum) return;
     const currentSong = currentAlbum.items[currentSongIndex];
@@ -124,7 +129,18 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       title: currentSong.filename,
       album: currentAlbum.album,
     });
+    manageStorage();
   }, [currentAlbum, currentSongIndex]);
+
+  useEffect(() => {
+    const fetchStoredData = async () => {
+      const { album, songIndex } = await getFromStorage();
+      if (!album) return;
+      setCurrentAlbum(album);
+      setSongIndex(songIndex);
+    };
+    fetchStoredData();
+  }, []);
 
   return (
     <MusicContext.Provider

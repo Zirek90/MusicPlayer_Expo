@@ -4,3 +4,4 @@ export { getDirectory } from './get_directory';
 export { trimString } from './trim_string';
 export { calculateTimeLeft } from './calculate_time_left';
 export { calculateSongPosition } from './calculate_song_position';
+export { getFromStorage, addToStorage } from './manage_storage';
