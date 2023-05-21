@@ -2,11 +2,11 @@ import { PropsWithChildren, useState, createContext, useContext } from 'react';
 import { Audio } from 'expo-av';
 import { useDispatch } from 'react-redux';
 import { SongStatus } from '@enums';
-import { pauseSong, playSong, stopSong, resumeSong } from '@store/reducers';
+import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
 import { calculateSongPosition, calculateTimeLeft } from '@utils';
+import { Album } from '@types';
 
 interface ContextState {
-  song?: Audio.Sound;
   songProgress: number;
   handleSong: (
     songStatus: SongStatus,
@@ -65,6 +65,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         await song?.pauseAsync();
         dispatch(pauseSong({ songStatus }));
         break;
+      case SongStatus.LOOP:
+        const currentSong = await song?.getStatusAsync();
+        if (currentSong?.isLoaded) {
+          const isLooping = currentSong.isLooping;
+          await song?.setIsLoopingAsync(!isLooping);
+        }
+        dispatch(loopSong());
       default:
         break;
     }
@@ -78,7 +85,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <MusicContext.Provider value={{ song, songProgress, handleSong, handleSongProgress }}>
+    <MusicContext.Provider value={{ songProgress, handleSong, handleSongProgress }}>
       {children}
     </MusicContext.Provider>
   );

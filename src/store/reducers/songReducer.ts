@@ -6,6 +6,7 @@ type initialStateProps = {
   filename: string | null;
   uri: string | null;
   songStatus: SongStatus;
+  isLooping: boolean;
 };
 
 const initialState: initialStateProps = {
@@ -13,6 +14,7 @@ const initialState: initialStateProps = {
   filename: null,
   uri: null,
   songStatus: SongStatus.STOP,
+  isLooping: false,
 };
 
 export const songSlice = createSlice({
@@ -38,7 +40,11 @@ export const songSlice = createSlice({
       state.songStatus = SongStatus.PLAY;
       return state;
     },
+    loopSong: state => {
+      state.isLooping = !state.isLooping;
+      return state;
+    },
   },
 });
 
-export const { playSong, stopSong, pauseSong, resumeSong } = songSlice.actions;
+export const { playSong, stopSong, pauseSong, resumeSong, loopSong } = songSlice.actions;

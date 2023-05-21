@@ -11,15 +11,24 @@ type PlayerControllersProps = {
 
 export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
   const currentSongStatus = useSelector((state: RootState) => state.song.songStatus);
+  const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
   return (
     <HStack justifyContent="space-between" alignItems="center" px={1}>
-      <PressableController
-        size={45}
-        color="grey"
-        name="skip-previous-circle-outline"
-        handleAction={() => {}}
-      />
+      <HStack alignItems="center">
+        <PressableController
+          size={25}
+          color={isLooping ? COLORS.control_play_active : COLORS.control_play_inactive}
+          name="repeat"
+          handleAction={() => handleSong(SongStatus.LOOP)}
+        />
+        <PressableController
+          size={45}
+          color="grey"
+          name="skip-previous-circle-outline"
+          handleAction={() => {}}
+        />
+      </HStack>
       <HStack>
         <PressableController
           size={60}
@@ -42,12 +51,15 @@ export const PlayerControllers = ({ handleSong }: PlayerControllersProps) => {
           handleAction={() => handleSong(SongStatus.RESUME)}
         />
       </HStack>
-      <PressableController
-        size={45}
-        color="grey"
-        name="skip-next-circle-outline"
-        handleAction={() => {}}
-      />
+      <HStack alignItems="center">
+        <PressableController
+          size={45}
+          color="grey"
+          name="skip-next-circle-outline"
+          handleAction={() => {}}
+        />
+        <PressableController size={25} color="grey" name="playlist-plus" handleAction={() => {}} />
+      </HStack>
     </HStack>
   );
 };
