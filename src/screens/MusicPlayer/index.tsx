@@ -4,8 +4,7 @@ import { MusicPlayerHeader, SongProgress, PlayerControllers } from '@components'
 import { useMusicContext } from '@context';
 
 export const MusicPlayer = () => {
-  const { songProgress, songDetails, handleSongProgress, handleSong, handleMusicPlayerPlay } =
-    useMusicContext();
+  const { songProgress, songDetails, handleSongProgress } = useMusicContext();
   return (
     <Box
       bgColor={COLORS.mode_background}
@@ -17,7 +16,7 @@ export const MusicPlayer = () => {
       left={2}>
       <MusicPlayerHeader {...songDetails} />
       <SongProgress songProgress={songProgress} handleSongProgress={handleSongProgress} />
-      <PlayerControllers handleSong={handleSong} handleMusicPlayerPlay={handleMusicPlayerPlay} />
+      <PlayerControllers />
     </Box>
   );
 };

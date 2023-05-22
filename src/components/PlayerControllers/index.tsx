@@ -4,16 +4,17 @@ import { PressableController } from '../PressableController';
 import { SongStatus } from '@enums';
 import { RootState } from '@store/store';
 import { COLORS } from '@global';
+import { useMusicContext } from '@context';
 
-type PlayerControllersProps = {
-  handleSong: (songStatus: SongStatus) => Promise<void>;
-  handleMusicPlayerPlay: () => void;
-};
-
-export const PlayerControllers = ({
-  handleSong,
-  handleMusicPlayerPlay,
-}: PlayerControllersProps) => {
+export const PlayerControllers = () => {
+  const {
+    handleResume,
+    handlePause,
+    handleLoop,
+    handlePrevious,
+    handleNext,
+    handleMusicPlayerPlay,
+  } = useMusicContext();
   const currentSongStatus = useSelector((state: RootState) => state.song.songStatus);
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
@@ -24,13 +25,13 @@ export const PlayerControllers = ({
           size={25}
           color={isLooping ? COLORS.control_play_active : COLORS.control_play_inactive}
           name="repeat"
-          handleAction={() => handleSong(SongStatus.LOOP)}
+          handleAction={handleLoop}
         />
         <PressableController
           size={45}
           color="grey"
           name="skip-previous-circle-outline"
-          handleAction={() => handleSong(SongStatus.PREVIOUS)}
+          handleAction={handlePrevious}
         />
       </HStack>
       <HStack>
@@ -42,7 +43,7 @@ export const PlayerControllers = ({
               : COLORS.control_play_inactive
           }
           name="pause-circle-outline"
-          handleAction={() => handleSong(SongStatus.PAUSE)}
+          handleAction={handlePause}
         />
         <PressableController
           size={60}
@@ -53,9 +54,7 @@ export const PlayerControllers = ({
           }
           name="play-circle-outline"
           handleAction={() =>
-            currentSongStatus === SongStatus.STOP
-              ? handleMusicPlayerPlay()
-              : handleSong(SongStatus.RESUME)
+            currentSongStatus === SongStatus.STOP ? handleMusicPlayerPlay() : handleResume()
           }
         />
       </HStack>
@@ -64,7 +63,7 @@ export const PlayerControllers = ({
           size={45}
           color="grey"
           name="skip-next-circle-outline"
-          handleAction={() => handleSong(SongStatus.NEXT)}
+          handleAction={handleNext}
         />
         <PressableController size={25} color="grey" name="playlist-plus" handleAction={() => {}} />
       </HStack>

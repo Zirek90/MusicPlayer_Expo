@@ -17,14 +17,22 @@ type AccordionItemProps = {
 };
 
 export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
-  const { songProgress, handleSong, handleCurrentAlbum, handleSongIndex } = useMusicContext();
+  const {
+    songProgress,
+    handlePlay,
+    handleResume,
+    handleStop,
+    handlePause,
+    handleCurrentAlbum,
+    handleSongIndex,
+  } = useMusicContext();
   const currentSong = useSelector((state: RootState) => state.song);
   const sameId = currentSong.id === data.id;
 
-  const handlePlay = () => {
+  const handlePlaySong = () => {
     handleCurrentAlbum(album);
     handleSongIndex(index);
-    handleSong(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration);
+    handlePlay(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration);
   };
 
   return (
@@ -57,14 +65,14 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
               <PressableController
                 color={COLORS.control_stop}
                 name="stop"
-                handleAction={() => handleSong(SongStatus.STOP)}
+                handleAction={handleStop}
               />
 
               {currentSong.songStatus !== SongStatus.PAUSE && (
                 <PressableController
                   color={COLORS.control_pause}
                   name="pause"
-                  handleAction={() => handleSong(SongStatus.PAUSE)}
+                  handleAction={handlePause}
                 />
               )}
 
@@ -75,7 +83,7 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
                     : COLORS.control_play_inactive
                 }
                 name="play"
-                handleAction={() => handleSong(SongStatus.RESUME)}
+                handleAction={handleResume}
               />
             </>
           ))}
@@ -83,7 +91,7 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
           <PressableController
             color={COLORS.control_play_inactive}
             name="play"
-            handleAction={handlePlay}
+            handleAction={handlePlaySong}
           />
         )}
       </HStack>

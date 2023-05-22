@@ -3,19 +3,12 @@ import { Audio } from 'expo-av';
 import { useDispatch } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
-import { addToStorage, calculateSongPosition, calculateProgress, getFromStorage } from '@utils';
+import { calculateSongPosition } from '@utils';
 import { Album } from '@types';
+import { MusicService, StorageService } from '@service';
 
 interface ContextState {
-  song?: Audio.Sound;
   songProgress: number;
-  handleSong: (
-    songStatus: SongStatus,
-    id?: string,
-    filename?: string,
-    uri?: string,
-    duration?: number,
-  ) => Promise<void>;
   songDetails: {
     title: string;
     album: string;
@@ -23,7 +16,20 @@ interface ContextState {
   handleSongProgress: (progress: number) => Promise<void>;
   handleCurrentAlbum: (album: Album) => void;
   handleSongIndex: (index: number) => void;
-  handleMusicPlayerPlay: () => void;
+  handleMusicPlayerPlay: () => Promise<void>;
+  handlePlay: (
+    songStatus: SongStatus,
+    id: string,
+    filename: string,
+    uri: string,
+    duration: number,
+  ) => Promise<void>;
+  handleResume: () => Promise<void>;
+  handleStop: () => Promise<void>;
+  handlePause: () => Promise<void>;
+  handleLoop: () => Promise<void>;
+  handlePrevious: () => Promise<void>;
+  handleNext: () => Promise<void>;
 }
 
 const MusicContext = createContext<ContextState>({} as ContextState);
@@ -40,92 +46,75 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [songProgress, setSongProgress] = useState(0);
   const dispatch = useDispatch();
 
-  const handleSong = async (
+  const handlePlay = async (
     songStatus: SongStatus,
-    id?: string,
-    filename?: string,
-    uri?: string,
-    duration?: number,
+    id: string,
+    filename: string,
+    uri: string,
+    duration: number,
   ) => {
-    switch (songStatus) {
-      case SongStatus.PLAY:
-        song && (await song?.unloadAsync());
-        const { sound } = await Audio.Sound.createAsync(
-          { uri: uri! },
-          { shouldPlay: true },
-          status => {
-            if (status.isLoaded) {
-              const totalDuration = status.durationMillis! / 1000;
-              const currentPosition = status.positionMillis / 1000;
-              const timeLeft = calculateProgress(totalDuration, currentPosition);
-              setSongProgress(timeLeft);
-
-              if (status.didJustFinish) handleSong(SongStatus.NEXT);
-            }
-          },
-        );
-
-        setCurrentSongDuration(duration!);
-        dispatch(playSong({ id, filename, uri, songStatus, duration }));
-        setSong(sound);
-        break;
-      case SongStatus.RESUME:
-        await song?.playAsync();
-        dispatch(resumeSong());
-        break;
-      case SongStatus.STOP:
-        await song?.unloadAsync();
-        dispatch(stopSong({ songStatus }));
-        setSongProgress(0);
-        setSong(undefined);
-        break;
-      case SongStatus.PAUSE:
-        await song?.pauseAsync();
-        dispatch(pauseSong({ songStatus }));
-        break;
-      case SongStatus.LOOP:
-        const currentSong = await song?.getStatusAsync();
-        if (currentSong?.isLoaded) {
-          const isLooping = currentSong.isLooping;
-          await song?.setIsLoopingAsync(!isLooping);
-        }
-        dispatch(loopSong());
-        break;
-      case SongStatus.PREVIOUS:
-        const previousIndex = currentSongIndex === 0 ? 0 : currentSongIndex - 1;
-        const previousSong = currentAlbum?.items[previousIndex]!;
-        setCurrentSongIndex(previousIndex);
-
-        handleSong(
-          SongStatus.PLAY,
-          previousSong.id,
-          previousSong.filename,
-          previousSong.uri,
-          previousSong.duration,
-        );
-        break;
-      case SongStatus.NEXT:
-        const nextIndex =
-          currentSongIndex + 1 === currentAlbum!.items.length ? 0 : currentSongIndex + 1;
-        setCurrentSongIndex(nextIndex);
-        const nextSong = currentAlbum?.items[nextIndex]!;
-
-        handleSong(
-          SongStatus.PLAY,
-          nextSong.id,
-          nextSong.filename,
-          nextSong.uri,
-          nextSong.duration,
-        );
-        break;
-      default:
-        break;
+    if (song) {
+      await MusicService.stop(song);
     }
+    const sound = await MusicService.play(uri, setSongProgress);
+
+    setCurrentSongDuration(duration);
+    dispatch(playSong({ id, filename, uri, songStatus, duration }));
+    setSong(sound);
   };
 
-  const handleMusicPlayerPlay = () => {
+  const handleResume = async () => {
+    if (!song) return;
+
+    await MusicService.resume(song);
+    dispatch(resumeSong());
+  };
+
+  const handleStop = async () => {
+    if (!song) return;
+
+    await MusicService.stop(song);
+    dispatch(stopSong({ songStatus: SongStatus.STOP }));
+    setSongProgress(0);
+    setSong(undefined);
+  };
+
+  const handlePause = async () => {
+    if (!song) return;
+
+    await MusicService.pause(song);
+    dispatch(pauseSong({ songStatus: SongStatus.PAUSE }));
+  };
+
+  const handleLoop = async () => {
+    if (!song) return;
+
+    await MusicService.loop(song);
+    dispatch(loopSong());
+  };
+
+  const handlePrevious = async () => {
+    const previousIndex = currentSongIndex === 0 ? 0 : currentSongIndex - 1;
+    const previousSong = currentAlbum?.items[previousIndex]!;
+    setCurrentSongIndex(previousIndex);
+
+    const { id, filename, uri, duration } = previousSong;
+    await handlePlay(SongStatus.PLAY, id, filename, uri, duration);
+  };
+
+  const handleNext = async () => {
+    const albumLength = currentAlbum!.items.length - 1;
+    const nextIndex = currentSongIndex === albumLength ? 0 : currentSongIndex + 1;
+    setCurrentSongIndex(nextIndex);
+    const nextSong = currentAlbum?.items[nextIndex]!;
+
+    const { id, filename, uri, duration } = nextSong;
+    await handlePlay(SongStatus.PLAY, id, filename, uri, duration);
+  };
+
+  const handleMusicPlayerPlay = async () => {
     const currentSong = currentAlbum?.items[currentSongIndex]!;
-    handleSong(
+    handlePlay(
       SongStatus.PLAY,
       currentSong.id,
       currentSong.filename,
@@ -146,8 +135,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const handleSongIndex = (index: number) => setCurrentSongIndex(index);
 
   const manageStorage = async () => {
-    await addToStorage('album', currentAlbum!);
-    await addToStorage('songIndex', currentSongIndex!);
+    await StorageService.set('album', currentAlbum!);
+    await StorageService.set('songIndex', currentSongIndex!);
   };
 
   useEffect(() => {
@@ -162,7 +151,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const fetchStoredData = async () => {
-      const { album, songIndex } = await getFromStorage();
+      const { album, songIndex } = await StorageService.get();
       if (!album) return;
       setCurrentAlbum(album);
       setCurrentSongIndex(songIndex);
@@ -172,16 +161,21 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     // toDo debug why next song in case of last one is wrongly calculated
-    console.log({ currentSongIndex }, currentAlbum?.items.length);
+    console.log({ currentSongIndex }, { length: currentAlbum?.items.length });
   }, [currentSongIndex, currentAlbum]);
 
   return (
     <MusicContext.Provider
       value={{
-        song,
         songProgress,
         songDetails,
-        handleSong,
+        handlePlay,
+        handlePause,
+        handleResume,
+        handleStop,
+        handleLoop,
+        handleNext,
+        handlePrevious,
         handleSongProgress,
         handleCurrentAlbum,
         handleSongIndex,
