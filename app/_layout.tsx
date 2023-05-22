@@ -8,6 +8,7 @@ import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
 import { MusicContextProvider } from '@context';
 import { ThemeConfig } from '@configs';
+import { COLORS } from '@global';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
@@ -25,10 +26,8 @@ export default function RootLayout() {
     <Provider store={store}>
       <MusicContextProvider>
         <NativeBaseProvider theme={ThemeConfig}>
-          <SafeAreaView style={{ flex: 1 }}>
-            {/* {!loaded && <SplashScreen />} */}
-            <RootLayoutNav />
-          </SafeAreaView>
+          {/* {!loaded && <SplashScreen />} */}
+          <RootLayoutNav />
         </NativeBaseProvider>
       </MusicContextProvider>
     </Provider>
