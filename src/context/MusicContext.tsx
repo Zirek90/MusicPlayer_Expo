@@ -95,6 +95,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   const handlePrevious = async () => {
+    if (!currentAlbum) return;
+
     const previousIndex = currentSongIndex === 0 ? 0 : currentSongIndex - 1;
     const previousSong = currentAlbum?.items[previousIndex]!;
     setCurrentSongIndex(previousIndex);
@@ -104,6 +106,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   const handleNext = async () => {
+    if (!currentAlbum) return;
+
     const albumLength = currentAlbum!.items.length - 1;
     const nextIndex = currentSongIndex === albumLength ? 0 : currentSongIndex + 1;
     setCurrentSongIndex(nextIndex);
@@ -114,6 +118,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   };
 
   const handleMusicPlayerPlay = async () => {
+    if (!currentAlbum) return;
+
     const currentSong = currentAlbum?.items[currentSongIndex]!;
     handlePlay(
       SongStatus.PLAY,
