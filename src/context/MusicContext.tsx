@@ -44,6 +44,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   });
   const [currentSongDuration, setCurrentSongDuration] = useState(0);
   const [songProgress, setSongProgress] = useState(0);
+  const [isSongDone, setIsSongDone] = useState(false);
   const dispatch = useDispatch();
 
   const handlePlay = async (
@@ -56,7 +57,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     if (song) {
       await MusicService.stop(song);
     }
-    const sound = await MusicService.play(uri, setSongProgress);
+    const sound = await MusicService.play(uri, setSongProgress, setIsSongDone);
 
     setCurrentSongDuration(duration);
     dispatch(playSong({ id, filename, uri, songStatus, duration }));
@@ -160,9 +161,9 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   useEffect(() => {
-    // toDo debug why next song in case of last one is wrongly calculated
-    console.log({ currentSongIndex }, { length: currentAlbum?.items.length });
-  }, [currentSongIndex, currentAlbum]);
+    if (!isSongDone) return;
+    handleNext();
+  }, [isSongDone]);
 
   return (
     <MusicContext.Provider

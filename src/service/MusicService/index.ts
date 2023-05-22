@@ -2,7 +2,12 @@ import { Audio } from 'expo-av';
 import { calculateProgress } from '@utils';
 
 export const MusicService = {
-  play: async (uri: string, setProgress: (v: number) => void) => {
+  play: async (
+    uri: string,
+    setProgress: (v: number) => void,
+    setIsSongDone: (v: boolean) => void,
+  ) => {
+    setIsSongDone(false);
     const { sound } = await Audio.Sound.createAsync({ uri }, { shouldPlay: true }, async status => {
       if (status.isLoaded) {
         const totalDuration = status.durationMillis! / 1000;
@@ -12,6 +17,7 @@ export const MusicService = {
 
         if (status.didJustFinish) {
           if (status.isLooping) return;
+          setIsSongDone(true);
         }
       }
     });
