@@ -8,11 +8,32 @@ import { COLORS } from '@global';
 import { SongStatus } from '@enums';
 import { useMusicContext } from '@context';
 import { PressableController } from '../PressableController';
+import { Album } from '@types';
 
-export const AccordionItem = ({ data }: { data: Asset }) => {
-  const { songProgress, handleSong } = useMusicContext();
+type AccordionItemProps = {
+  data: Asset;
+  album: Album;
+  index: number;
+};
+
+export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
+  const {
+    songProgress,
+    handlePlay,
+    handleResume,
+    handleStop,
+    handlePause,
+    handleCurrentAlbum,
+    handleSongIndex,
+  } = useMusicContext();
   const currentSong = useSelector((state: RootState) => state.song);
   const sameId = currentSong.id === data.id;
+
+  const handlePlaySong = () => {
+    handleCurrentAlbum(album);
+    handleSongIndex(index);
+    handlePlay(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration);
+  };
 
   return (
     <Box
@@ -34,7 +55,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
       )}
 
       <Text>
-        {trimString(data.filename)} - {durationToTime(data.duration)}
+        {trimString(data.filename)} - ({durationToTime(data.duration)})
       </Text>
 
       <HStack>
@@ -44,14 +65,14 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
               <PressableController
                 color={COLORS.control_stop}
                 name="stop"
-                handleAction={() => handleSong(SongStatus.STOP)}
+                handleAction={handleStop}
               />
 
               {currentSong.songStatus !== SongStatus.PAUSE && (
                 <PressableController
                   color={COLORS.control_pause}
                   name="pause"
-                  handleAction={() => handleSong(SongStatus.PAUSE)}
+                  handleAction={handlePause}
                 />
               )}
 
@@ -62,7 +83,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
                     : COLORS.control_play_inactive
                 }
                 name="play"
-                handleAction={() => handleSong(SongStatus.RESUME)}
+                handleAction={handleResume}
               />
             </>
           ))}
@@ -70,7 +91,7 @@ export const AccordionItem = ({ data }: { data: Asset }) => {
           <PressableController
             color={COLORS.control_play_inactive}
             name="play"
-            handleAction={() => handleSong(SongStatus.PLAY, data.id, data.filename, data.uri)}
+            handleAction={handlePlaySong}
           />
         )}
       </HStack>

@@ -3,16 +3,16 @@ import { SongStatus } from '@enums';
 
 type initialStateProps = {
   id: string | null;
-  filename: string | null;
-  uri: string | null;
+  duration: number | null;
   songStatus: SongStatus;
+  isLooping: boolean;
 };
 
 const initialState: initialStateProps = {
   id: null,
-  filename: null,
-  uri: null,
+  duration: null,
   songStatus: SongStatus.STOP,
+  isLooping: false,
 };
 
 export const songSlice = createSlice({
@@ -26,8 +26,7 @@ export const songSlice = createSlice({
     stopSong: (state, action) => {
       state.songStatus = action.payload.songStatus;
       state.id = null;
-      state.filename = null;
-      state.uri = null;
+      state.duration = null;
       return state;
     },
     pauseSong: (state, action) => {
@@ -38,7 +37,11 @@ export const songSlice = createSlice({
       state.songStatus = SongStatus.PLAY;
       return state;
     },
+    loopSong: state => {
+      state.isLooping = !state.isLooping;
+      return state;
+    },
   },
 });
 
-export const { playSong, stopSong, pauseSong, resumeSong } = songSlice.actions;
+export const { playSong, stopSong, pauseSong, resumeSong, loopSong } = songSlice.actions;

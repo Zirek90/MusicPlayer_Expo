@@ -21,6 +21,7 @@ module.exports = function (api) {
             '@store': './src/store',
             '@global': './src/global',
             '@context': './src/context',
+            '@service': './src/service',
           },
         },
       ],
