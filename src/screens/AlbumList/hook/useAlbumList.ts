@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { getDirectory, getExtension } from '@utils';
-import { AMOUNT_OF_FILES, AVAILABLE_EXTENSIONS, DURATION } from '@constants';
+import { AVAILABLE_EXTENSIONS, DURATION } from '@constants';
 import type { Album } from '@types';
 
 export type useAlbumListOutput = {
@@ -24,8 +24,12 @@ export const useAlbumList = (): useAlbumListOutput => {
   }, []);
 
   const scanMusicFiles = async () => {
-    const media = await MediaLibrary.getAssetsAsync({
-      first: AMOUNT_OF_FILES,
+    let media = await MediaLibrary.getAssetsAsync({
+      mediaType: MediaLibrary.MediaType.audio,
+    });
+
+    media = await MediaLibrary.getAssetsAsync({
+      first: media.totalCount,
       mediaType: MediaLibrary.MediaType.audio,
     });
 
