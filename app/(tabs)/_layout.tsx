@@ -14,7 +14,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         headerStyle: {
-          backgroundColor: COLORS.navigation_top_background,
+          backgroundColor: COLORS.background_secondary,
         },
         headerTitleAlign: 'center',
         headerTintColor: COLORS.white,

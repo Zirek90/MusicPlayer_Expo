@@ -11,7 +11,7 @@ export const MusicPlayerHeader = ({ title, album }: MusicPlayerHeaderProps) => {
     <HStack alignItems="center">
       <Avatar
         size="xl"
-        bgColor={COLORS.mode_content_background}
+        bgColor={COLORS.background_content_primary}
         source={require('../../assets/backgrounds/black_bg_2.png')}
       />
       <VStack ml={5} flexShrink={1}>

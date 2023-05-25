@@ -23,7 +23,7 @@ export const PlayerControllers = () => {
       <HStack alignItems="center">
         <PressableController
           size={25}
-          color={isLooping ? COLORS.control_play_active : COLORS.control_play_inactive}
+          color={isLooping ? COLORS.active : COLORS.inactive}
           name="repeat"
           handleAction={handleLoop}
         />
@@ -37,21 +37,13 @@ export const PlayerControllers = () => {
       <HStack>
         <PressableController
           size={60}
-          color={
-            currentSongStatus === SongStatus.PAUSE
-              ? COLORS.control_pause
-              : COLORS.control_play_inactive
-          }
+          color={currentSongStatus === SongStatus.PAUSE ? COLORS.hold : COLORS.inactive}
           name="pause-circle-outline"
           handleAction={handlePause}
         />
         <PressableController
           size={60}
-          color={
-            currentSongStatus === SongStatus.PLAY
-              ? COLORS.control_play_active
-              : COLORS.control_play_inactive
-          }
+          color={currentSongStatus === SongStatus.PLAY ? COLORS.active : COLORS.inactive}
           name="play-circle-outline"
           handleAction={() =>
             currentSongStatus === SongStatus.STOP ? handleMusicPlayerPlay() : handleResume()

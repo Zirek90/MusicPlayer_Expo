@@ -7,7 +7,7 @@ export const MusicPlayer = () => {
   const { songProgress, songDetails, handleSongProgress } = useMusicContext();
   return (
     <Box
-      bgColor={COLORS.mode_background}
+      bgColor={COLORS.background_primary}
       p={1}
       borderRadius={10}
       position="absolute"
