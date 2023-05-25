@@ -17,7 +17,7 @@ export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
           flex: 1,
           width: '100%',
         }}>
-        <Box bgColor={COLORS.mode_background} p={2} flex={1}>
+        <Box bgColor={COLORS.background_primary} p={2} flex={1}>
           {children}
         </Box>
       </ImageBackground>
