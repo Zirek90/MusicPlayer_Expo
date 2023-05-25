@@ -1,4 +1,4 @@
-import { Box, HStack, Text } from 'native-base';
+import { Box, HStack, Text, VStack } from 'native-base';
 import { useSelector } from 'react-redux';
 import { RootState } from '@store/store';
 import { Asset } from 'expo-media-library';
@@ -8,43 +8,33 @@ import { COLORS } from '@global';
 import { SongStatus } from '@enums';
 import { useMusicContext } from '@context';
 import { PressableController } from '../PressableController';
-import { Album } from '@types';
 
-type AccordionItemProps = {
+type SongItemProps = {
   data: Asset;
-  album: Album;
   index: number;
 };
 
-export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
-  const {
-    songProgress,
-    handlePlay,
-    handleResume,
-    handleStop,
-    handlePause,
-    handleCurrentAlbum,
-    handleSongIndex,
-  } = useMusicContext();
+export const SongItem = ({ data, index }: SongItemProps) => {
+  const { songProgress, handlePlay, handleResume, handleStop, handlePause, handleSongIndex } =
+    useMusicContext();
   const currentSong = useSelector((state: RootState) => state.song);
   const sameId = currentSong.id === data.id;
 
   const handlePlaySong = () => {
-    handleCurrentAlbum(album);
     handleSongIndex(index);
     handlePlay(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration);
   };
 
   return (
     <Box
-      ml={3}
+      mx={3}
       p={1}
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
-      bgColor={COLORS.mode_content_background}
-      borderColor="gray.300"
-      borderWidth={1}>
+      bgColor={sameId ? COLORS.background_content_secondary : COLORS.background_content_primary}
+      borderColor="gray.600"
+      borderBottomWidth={2}>
       {sameId && (
         <LinearGradient
           colors={[COLORS.progress_bar_start, COLORS.progress_bar_end]}
@@ -54,33 +44,31 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
         />
       )}
 
-      <Text>
-        {trimString(data.filename)} - ({durationToTime(data.duration)})
-      </Text>
+      <HStack alignItems="center">
+        <PressableController
+          size={15}
+          color={COLORS.inactive}
+          name="playlist-plus"
+          handleAction={() => {}}
+        />
+        <Text ml={2} fontWeight="bold">
+          {trimString(data.filename)} - ({durationToTime(data.duration)})
+        </Text>
+      </HStack>
 
       <HStack>
         {!currentSong.id ||
           (sameId && (
             <>
-              <PressableController
-                color={COLORS.control_stop}
-                name="stop"
-                handleAction={handleStop}
-              />
+              <PressableController color={COLORS.hold} name="stop" handleAction={handleStop} />
 
               {currentSong.songStatus !== SongStatus.PAUSE && (
-                <PressableController
-                  color={COLORS.control_pause}
-                  name="pause"
-                  handleAction={handlePause}
-                />
+                <PressableController color={COLORS.hold} name="pause" handleAction={handlePause} />
               )}
 
               <PressableController
                 color={
-                  currentSong.songStatus !== SongStatus.PAUSE
-                    ? COLORS.control_play_active
-                    : COLORS.control_play_inactive
+                  currentSong.songStatus !== SongStatus.PAUSE ? COLORS.active : COLORS.inactive
                 }
                 name="play"
                 handleAction={handleResume}
@@ -88,11 +76,7 @@ export const AccordionItem = ({ data, album, index }: AccordionItemProps) => {
             </>
           ))}
         {!sameId && (
-          <PressableController
-            color={COLORS.control_play_inactive}
-            name="play"
-            handleAction={handlePlaySong}
-          />
+          <PressableController color={COLORS.inactive} name="play" handleAction={handlePlaySong} />
         )}
       </HStack>
     </Box>
