@@ -6,14 +6,16 @@ import type { Album } from '@types';
 
 export type useAlbumListOutput = {
   albumList: Album[];
-  openedDirectories: string[];
-  handleToggleExpand: (key: string) => void;
+  activeAlbum: string;
+  displayedSongs: MediaLibrary.Asset[];
+  handleSetAlbum: (element: Album) => void;
 };
 
 export const useAlbumList = (): useAlbumListOutput => {
   const [permissionGranted, setPermissionGranted] = useState(false);
   const [albumList, setAlbumList] = useState<Album[]>([]);
-  const [openedDirectories, setOpenedDirectories] = useState<string[]>([]);
+  const [activeAlbum, setActiveAlbum] = useState<string>('');
+  const [displayedSongs, setDisplayedSongs] = useState<MediaLibrary.Asset[]>([]);
 
   useEffect(() => {
     const getPermission = async () => {
@@ -69,16 +71,9 @@ export const useAlbumList = (): useAlbumListOutput => {
     }, []);
   };
 
-  const handleToggleExpand = (key: string) => {
-    const copyOpenedDirectories = [...openedDirectories];
-
-    if (!copyOpenedDirectories.includes(key)) {
-      copyOpenedDirectories.push(key);
-    } else {
-      copyOpenedDirectories.splice(copyOpenedDirectories.indexOf(key), 1);
-    }
-
-    setOpenedDirectories(copyOpenedDirectories);
+  const handleSetAlbum = (element: Album) => {
+    setActiveAlbum(element.album);
+    setDisplayedSongs(element.items);
   };
 
   useEffect(() => {
@@ -86,5 +81,10 @@ export const useAlbumList = (): useAlbumListOutput => {
     scanMusicFiles();
   }, [permissionGranted]);
 
-  return { albumList, openedDirectories, handleToggleExpand };
+  return {
+    albumList,
+    activeAlbum,
+    displayedSongs,
+    handleSetAlbum,
+  };
 };
