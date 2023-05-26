@@ -11,7 +11,10 @@ export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
   return (
     <View flex={1} bgColor={COLORS.black}>
       <ImageBackground
-        source={background?.path as ImageSourcePropType}
+        source={
+          (background?.path as ImageSourcePropType) ||
+          require('../../assets/backgrounds/black_bg_1.png') // as fallback
+        }
         resizeMode="cover"
         style={{
           flex: 1,
