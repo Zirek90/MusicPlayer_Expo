@@ -18,7 +18,6 @@ export default function RootLayout() {
         <AlbumsContextProvider>
           <MusicContextProvider>
             <NativeBaseProvider theme={ThemeConfig}>
-              {/* {!loaded && <SplashScreen />} */}
               <RootLayoutNav />
             </NativeBaseProvider>
           </MusicContextProvider>
