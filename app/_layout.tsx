@@ -1,35 +1,29 @@
 import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { NativeBaseProvider } from 'native-base';
-import { SafeAreaView } from 'react-native';
-import { Audio } from 'expo-av';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
-import { MusicContextProvider } from '@context';
+import { AlbumsContextProvider, MusicContextProvider, PermissionContextProvider } from '@context';
 import { ThemeConfig } from '@configs';
-import { COLORS } from '@global';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
 export default function RootLayout() {
-  Audio.setAudioModeAsync({
-    allowsRecordingIOS: false,
-    staysActiveInBackground: true,
-    playsInSilentModeIOS: true,
-    shouldDuckAndroid: true,
-    playThroughEarpieceAndroid: false,
-  });
   return (
     <Provider store={store}>
-      <MusicContextProvider>
-        <NativeBaseProvider theme={ThemeConfig}>
-          {/* {!loaded && <SplashScreen />} */}
-          <RootLayoutNav />
-        </NativeBaseProvider>
-      </MusicContextProvider>
+      <PermissionContextProvider>
+        <AlbumsContextProvider>
+          <MusicContextProvider>
+            <NativeBaseProvider theme={ThemeConfig}>
+              {/* {!loaded && <SplashScreen />} */}
+              <RootLayoutNav />
+            </NativeBaseProvider>
+          </MusicContextProvider>
+        </AlbumsContextProvider>
+      </PermissionContextProvider>
     </Provider>
   );
 }

@@ -1,23 +1,30 @@
 import { HStack } from 'native-base';
 import { useSelector } from 'react-redux';
-import { PressableController } from '../PressableController';
 import { SongStatus } from '@enums';
 import { RootState } from '@store/store';
 import { COLORS } from '@global';
-import { useMusicContext } from '@context';
+import { withMusicContext } from '@hoc';
+import { PressableController } from '../PressableController';
 
-export const PlayerControllers = () => {
-  const {
-    handleResume,
-    handlePause,
-    handleLoop,
-    handlePrevious,
-    handleNext,
-    handleMusicPlayerPlay,
-  } = useMusicContext();
+type PlayerControllersProps = {
+  handleMusicPlayerPlay: () => Promise<void>;
+  handleResume: () => Promise<void>;
+  handlePause: () => Promise<void>;
+  handleLoop: () => Promise<void>;
+  handlePrevious: () => Promise<void>;
+  handleNext: () => Promise<void>;
+};
+
+const PlayerControllersComponent = ({
+  handleResume,
+  handlePause,
+  handleLoop,
+  handlePrevious,
+  handleNext,
+  handleMusicPlayerPlay,
+}: PlayerControllersProps) => {
   const currentSongStatus = useSelector((state: RootState) => state.song.songStatus);
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
-
   return (
     <HStack justifyContent="space-between" alignItems="center" px={1}>
       <HStack alignItems="center">
@@ -62,3 +69,12 @@ export const PlayerControllers = () => {
     </HStack>
   );
 };
+
+export const PlayerControllers = withMusicContext(PlayerControllersComponent, {
+  handleResume: data => data.handleResume,
+  handlePause: data => data.handlePause,
+  handleLoop: data => data.handleLoop,
+  handlePrevious: data => data.handlePrevious,
+  handleNext: data => data.handleNext,
+  handleMusicPlayerPlay: data => data.handleMusicPlayerPlay,
+});
