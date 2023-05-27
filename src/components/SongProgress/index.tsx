@@ -3,17 +3,20 @@ import { Box, HStack, Text, Slider } from 'native-base';
 import { useSelector } from 'react-redux';
 import { RootState } from '@store/store';
 import { calculateCurrentTime, durationToTime } from '@utils';
-import { useMusicContext } from '@context';
+import { withMusicContext } from '@hoc';
 
-export const SongProgress = () => {
+type SongProgressProps = {
+  songProgress: number;
+  handleSongProgress: (progress: number) => Promise<void>;
+};
+
+const SongProgressComponent = ({ songProgress, handleSongProgress }: SongProgressProps) => {
   const [currentValue, setCurrentValue] = useState(0);
   const [isDragActive, setIsDragActive] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const currentTimePositionRef = useRef('0:00');
   const duration = useSelector((state: RootState) => state.song.duration);
-  const { songProgress, handleSongProgress } = useMusicContext();
 
-  // toDo optimize this code as it still seems not so responsive
   useEffect(() => {
     if (isDragActive) return;
     setCurrentValue(songProgress);
@@ -56,3 +59,8 @@ export const SongProgress = () => {
     </Box>
   );
 };
+
+export const SongProgress = withMusicContext(SongProgressComponent, {
+  songProgress: data => data.songProgress,
+  handleSongProgress: data => data.handleSongProgress,
+});
