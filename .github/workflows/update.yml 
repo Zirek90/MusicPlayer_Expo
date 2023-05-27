@@ -1,7 +1,7 @@
 name: Generate apk build
 
 on:
-  push:
+  merge:
     branches:
       - development
 
