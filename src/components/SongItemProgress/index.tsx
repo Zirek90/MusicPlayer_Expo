@@ -1,9 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useMusicContext } from '@context';
 import { COLORS } from '@global';
+import { withMusicContext } from '@hoc';
 
-export const SongItemProgress = () => {
-  const { songProgress } = useMusicContext();
+type SongItemProgressProps = {
+  songProgress: number;
+};
+
+const SongItemProgressComponent = ({ songProgress }: SongItemProgressProps) => {
   return (
     <LinearGradient
       colors={[COLORS.progress_bar_start, COLORS.progress_bar_end]}
@@ -13,3 +16,7 @@ export const SongItemProgress = () => {
     />
   );
 };
+
+export const SongItemProgress = withMusicContext(SongItemProgressComponent, {
+  songProgress: data => data.songProgress,
+});

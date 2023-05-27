@@ -1,7 +1,6 @@
 import { Avatar, HStack, Text, VStack, Heading } from 'native-base';
 import { COLORS } from '@global';
-import { useMusicContext } from '@context';
-import { memo } from 'react';
+import { withMusicContext } from '@hoc';
 
 type MusicPlayerHeaderProps = {
   songDetails: {
@@ -10,16 +9,7 @@ type MusicPlayerHeaderProps = {
   };
 };
 
-const withContext = (Component: React.FC<MusicPlayerHeaderProps>) => {
-  const MemoComponent = memo(Component);
-
-  return () => {
-    const { songDetails } = useMusicContext();
-    return <MemoComponent songDetails={songDetails} />;
-  };
-};
-
-export const MusicPlayerHeader = withContext(({ songDetails }) => {
+const MusicPlayerHeaderComponent = ({ songDetails }: MusicPlayerHeaderProps) => {
   return (
     <HStack alignItems="center">
       <Avatar
@@ -33,4 +23,8 @@ export const MusicPlayerHeader = withContext(({ songDetails }) => {
       </VStack>
     </HStack>
   );
+};
+
+export const MusicPlayerHeader = withMusicContext(MusicPlayerHeaderComponent, {
+  songDetails: data => data.songDetails,
 });
