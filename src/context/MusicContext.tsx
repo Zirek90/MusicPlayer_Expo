@@ -7,12 +7,13 @@ import {
   useCallback,
 } from 'react';
 import { Audio } from 'expo-av';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
 import { calculateSongPosition } from '@utils';
 import { MusicService, StorageService } from '@service';
 import { useAlbumsContext } from './AlbumsContext';
+import { RootState } from '@store/store';
 
 export interface ContextState {
   songProgress: number;
@@ -52,6 +53,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [isSongDone, setIsSongDone] = useState(false);
   const { activeAlbum } = useAlbumsContext();
   const dispatch = useDispatch();
+  const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
   const handlePlay = useCallback(
     async (songStatus: SongStatus, id: string, filename: string, uri: string, duration: number) => {
@@ -100,6 +102,10 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const handlePrevious = useCallback(async () => {
     if (!activeAlbum) return;
 
+    if (isLooping) {
+      handleLoop();
+    }
+
     const previousIndex = currentSongIndex === 0 ? 0 : currentSongIndex - 1;
     const previousSong = activeAlbum.items[previousIndex]!;
     setCurrentSongIndex(previousIndex);
@@ -110,6 +116,10 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleNext = useCallback(async () => {
     if (!activeAlbum) return;
+
+    if (isLooping) {
+      handleLoop();
+    }
 
     const albumLength = activeAlbum.items.length - 1;
     const nextIndex = currentSongIndex === albumLength ? 0 : currentSongIndex + 1;
