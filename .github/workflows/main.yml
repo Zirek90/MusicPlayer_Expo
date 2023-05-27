@@ -5,7 +5,6 @@ on:
     branches:
       - development
 
-
 jobs:
   update:
     name: EAS Update
@@ -36,4 +35,4 @@ jobs:
         run: npm install
 
       - name: Publish update
-        run: eas build --platform android --profile preview_apk
+        run: eas build --platform android --profile preview_apk --non-interactive
