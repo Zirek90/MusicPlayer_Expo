@@ -153,6 +153,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (!activeAlbum) return;
     const currentSong = activeAlbum.items[currentSongIndex];
+    if (!currentSong) return;
+
     setSongDetails({
       title: currentSong.filename,
       album: activeAlbum.album,
