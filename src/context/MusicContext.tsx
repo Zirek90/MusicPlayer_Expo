@@ -69,13 +69,14 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       if (song) {
         MusicService.stop(song);
       }
-
-      const sound = await MusicService.play(uri, setSongProgress, setIsSongDone);
-      if (isReactivated) {
-        const currentPositon = calculateSongPosition(songProgress, currentSongDuration);
-        await sound.setPositionAsync(currentPositon);
-      }
-      await sound.playAsync();
+      const sound = await MusicService.play(
+        uri,
+        setSongProgress,
+        setIsSongDone,
+        songProgress,
+        currentSongDuration,
+        isReactivated,
+      );
 
       dispatch(playSong({ id, filename, uri, songStatus }));
       setCurrentSongDuration(duration);

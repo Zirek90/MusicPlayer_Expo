@@ -1,5 +1,5 @@
 import { Audio } from 'expo-av';
-import { calculateProgress } from '@utils';
+import { calculateProgress, calculateSongPosition } from '@utils';
 import { StorageService } from '../StorageService';
 
 export const MusicService = {
@@ -7,6 +7,9 @@ export const MusicService = {
     uri: string,
     setProgress: (v: number) => void,
     setIsSongDone: (v: boolean) => void,
+    songProgress: number,
+    currentSongDuration: number,
+    isReactivated?: boolean,
   ) => {
     setIsSongDone(false);
     const { sound } = await Audio.Sound.createAsync(
@@ -14,7 +17,7 @@ export const MusicService = {
       { shouldPlay: false },
       async status => {
         if (status.isLoaded) {
-          if (!status.positionMillis) return;
+          if (!status.positionMillis && isReactivated) return; // to skip flickering effect of song progress after reactivating the song
 
           const totalDuration = status.durationMillis! / 1000;
           const currentPosition = status.positionMillis / 1000;
@@ -29,6 +32,11 @@ export const MusicService = {
         }
       },
     );
+    if (isReactivated) {
+      const currentPositon = calculateSongPosition(songProgress, currentSongDuration);
+      await sound.setPositionAsync(currentPositon);
+    }
+    await sound.playAsync();
     return sound;
   },
   stop: async (soundObject: Audio.Sound) => {
