@@ -1,5 +1,6 @@
 import { Audio } from 'expo-av';
 import { calculateProgress } from '@utils';
+import { StorageService } from '../StorageService';
 
 export const MusicService = {
   play: async (
@@ -8,19 +9,26 @@ export const MusicService = {
     setIsSongDone: (v: boolean) => void,
   ) => {
     setIsSongDone(false);
-    const { sound } = await Audio.Sound.createAsync({ uri }, { shouldPlay: true }, async status => {
-      if (status.isLoaded) {
-        const totalDuration = status.durationMillis! / 1000;
-        const currentPosition = status.positionMillis / 1000;
-        const timeLeft = calculateProgress(totalDuration, currentPosition);
-        setProgress(timeLeft);
+    const { sound } = await Audio.Sound.createAsync(
+      { uri },
+      { shouldPlay: false },
+      async status => {
+        if (status.isLoaded) {
+          if (!status.positionMillis) return;
 
-        if (status.didJustFinish) {
-          if (status.isLooping) return;
-          setIsSongDone(true);
+          const totalDuration = status.durationMillis! / 1000;
+          const currentPosition = status.positionMillis / 1000;
+          const timeLeft = calculateProgress(totalDuration, currentPosition);
+          setProgress(timeLeft);
+          StorageService.set('songProgress', timeLeft);
+
+          if (status.didJustFinish) {
+            if (status.isLooping) return;
+            setIsSongDone(true);
+          }
         }
-      }
-    });
+      },
+    );
     return sound;
   },
   stop: async (soundObject: Audio.Sound) => {
