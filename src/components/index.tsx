@@ -1,5 +1,4 @@
 export { BackgroundWrapper } from './BackgroundWrapper';
-export { Accordion } from './Accordion';
 export { SongItem } from './SongItem';
 export { SongItemProgress } from './SongItemProgress';
 export { SongItemControllers } from './SongItemControllers';
