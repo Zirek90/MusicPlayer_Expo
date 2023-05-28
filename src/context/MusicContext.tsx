@@ -31,7 +31,7 @@ export interface ContextState {
     filename: string,
     uri: string,
     duration: number,
-    isReanimated?: boolean,
+    isReactivated?: boolean,
   ) => Promise<void>;
   handleResume: () => Promise<void>;
   handleStop: () => Promise<void>;
@@ -64,14 +64,14 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       filename: string,
       uri: string,
       duration: number,
-      isReanimated?: boolean,
+      isReactivated?: boolean,
     ) => {
       if (song) {
         MusicService.stop(song);
       }
 
       const sound = await MusicService.play(uri, setSongProgress, setIsSongDone);
-      if (isReanimated) {
+      if (isReactivated) {
         const currentPositon = calculateSongPosition(songProgress, currentSongDuration);
         await sound.setPositionAsync(currentPositon);
       }
