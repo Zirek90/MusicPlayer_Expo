@@ -3,14 +3,12 @@ import { SongStatus } from '@enums';
 
 type initialStateProps = {
   id: string | null;
-  duration: number | null;
   songStatus: SongStatus;
   isLooping: boolean;
 };
 
 const initialState: initialStateProps = {
   id: null,
-  duration: null,
   songStatus: SongStatus.STOP,
   isLooping: false,
 };
@@ -26,7 +24,6 @@ export const songSlice = createSlice({
     stopSong: (state, action) => {
       state.songStatus = action.payload.songStatus;
       state.id = null;
-      state.duration = null;
       return state;
     },
     pauseSong: (state, action) => {

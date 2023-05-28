@@ -16,6 +16,7 @@ import { useAlbumsContext } from './AlbumsContext';
 import { RootState } from '@store/store';
 
 export interface ContextState {
+  currentSongDuration: number;
   songProgress: number;
   songDetails: {
     title: string;
@@ -30,6 +31,7 @@ export interface ContextState {
     filename: string,
     uri: string,
     duration: number,
+    isReanimated?: boolean,
   ) => Promise<void>;
   handleResume: () => Promise<void>;
   handleStop: () => Promise<void>;
@@ -56,17 +58,31 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
   const handlePlay = useCallback(
-    async (songStatus: SongStatus, id: string, filename: string, uri: string, duration: number) => {
+    async (
+      songStatus: SongStatus,
+      id: string,
+      filename: string,
+      uri: string,
+      duration: number,
+      isReanimated?: boolean,
+    ) => {
       if (song) {
         MusicService.stop(song);
       }
 
       const sound = await MusicService.play(uri, setSongProgress, setIsSongDone);
-      dispatch(playSong({ id, filename, uri, songStatus, duration }));
+      if (isReanimated) {
+        const currentPositon = calculateSongPosition(songProgress, currentSongDuration);
+        await sound.setPositionAsync(currentPositon);
+      }
+      await sound.playAsync();
+
+      dispatch(playSong({ id, filename, uri, songStatus }));
       setCurrentSongDuration(duration);
       setSong(sound);
+      StorageService.set('songDuration', duration);
     },
-    [song],
+    [song, songProgress, currentSongDuration],
   );
 
   const handleResume = useCallback(async () => {
@@ -140,6 +156,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       currentSong.filename,
       currentSong.uri,
       currentSong.duration,
+      true,
     );
   }, [activeAlbum]);
 
@@ -161,6 +178,11 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   }, [activeAlbum, currentSongIndex]);
 
   useEffect(() => {
+    if (!isSongDone) return;
+    handleNext();
+  }, [isSongDone]);
+
+  useEffect(() => {
     if (!activeAlbum) return;
     const currentSong = activeAlbum.items[currentSongIndex];
     if (!currentSong) return;
@@ -174,21 +196,19 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const fetchStoredIndex = async () => {
-      const { songIndex } = await StorageService.get();
-      if (!songIndex) return;
-      setCurrentSongIndex(songIndex);
+      const { songIndex, songDuration, songProgress: progress } = await StorageService.get();
+
+      songIndex && setCurrentSongIndex(songIndex);
+      songDuration && setCurrentSongDuration(Number(songDuration));
+      progress && setSongProgress(Number(progress));
     };
     fetchStoredIndex();
   }, []);
 
-  useEffect(() => {
-    if (!isSongDone) return;
-    handleNext();
-  }, [isSongDone]);
-
   return (
     <MusicContext.Provider
       value={{
+        currentSongDuration,
         songProgress,
         songDetails,
         handlePlay,

@@ -1,21 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import { Box, HStack, Text, Slider } from 'native-base';
-import { useSelector } from 'react-redux';
-import { RootState } from '@store/store';
 import { calculateCurrentTime, durationToTime } from '@utils';
 import { withMusicContext } from '@hoc';
 
 type SongProgressProps = {
   songProgress: number;
+  currentSongDuration: number;
   handleSongProgress: (progress: number) => Promise<void>;
 };
 
-const SongProgressComponent = ({ songProgress, handleSongProgress }: SongProgressProps) => {
+const SongProgressComponent = ({
+  songProgress,
+  handleSongProgress,
+  currentSongDuration,
+}: SongProgressProps) => {
   const [currentValue, setCurrentValue] = useState(0);
   const [isDragActive, setIsDragActive] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>();
   const currentTimePositionRef = useRef('0:00');
-  const duration = useSelector((state: RootState) => state.song.duration);
 
   useEffect(() => {
     if (isDragActive) return;
@@ -23,14 +25,14 @@ const SongProgressComponent = ({ songProgress, handleSongProgress }: SongProgres
   }, [songProgress, isDragActive]);
 
   useEffect(() => {
-    if (!duration) return;
-    currentTimePositionRef.current = calculateCurrentTime(duration, songProgress);
-  }, [songProgress, duration]);
+    if (!currentSongDuration) return;
+    currentTimePositionRef.current = calculateCurrentTime(currentSongDuration, songProgress);
+  }, [songProgress, currentSongDuration]);
 
-  const handleSliderChange = (val: number, isOnEnd?: boolean) => {
-    setCurrentValue(val);
+  const handleSliderChange = (value: number, isOnEnd?: boolean) => {
+    setCurrentValue(value);
     if (isOnEnd) {
-      handleSongProgress(val);
+      handleSongProgress(value);
       timer.current = setTimeout(() => setIsDragActive(false), 500); // to avoide effect of flickering
     }
   };
@@ -54,7 +56,9 @@ const SongProgressComponent = ({ songProgress, handleSongProgress }: SongProgres
       </Slider>
       <HStack justifyContent="space-between">
         <Text fontSize="lg">{currentTimePositionRef.current}</Text>
-        <Text fontSize="lg">{duration ? durationToTime(duration) : '0:00'}</Text>
+        <Text fontSize="lg">
+          {currentSongDuration ? durationToTime(currentSongDuration) : '0:00'}
+        </Text>
       </HStack>
     </Box>
   );
@@ -63,4 +67,5 @@ const SongProgressComponent = ({ songProgress, handleSongProgress }: SongProgres
 export const SongProgress = withMusicContext(SongProgressComponent, {
   songProgress: data => data.songProgress,
   handleSongProgress: data => data.handleSongProgress,
+  currentSongDuration: data => data.currentSongDuration,
 });
