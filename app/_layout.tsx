@@ -1,17 +1,24 @@
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { SplashScreen, Stack } from 'expo-router';
 import { NativeBaseProvider } from 'native-base';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
 import { AlbumsContextProvider, MusicContextProvider, PermissionContextProvider } from '@context';
 import { ThemeConfig } from '@configs';
+import { useFonts } from 'expo-font';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',
 };
 
 export default function RootLayout() {
+  const [loaded] = useFonts({
+    FelipaRegular: require('../assets/fonts/Felipa-Regular.ttf'),
+  });
+
+  if (!loaded) return <SplashScreen />;
+
   return (
     <Provider store={store}>
       <PermissionContextProvider>

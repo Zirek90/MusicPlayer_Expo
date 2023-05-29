@@ -36,7 +36,7 @@ export const SongItem = ({ data, index }: SongItemProps) => {
           name="playlist-plus"
           handleAction={() => {}}
         />
-        <Text ml={2} fontWeight="bold">
+        <Text ml={2}>
           {trimString(data.filename)} - ({durationToTime(data.duration)})
         </Text>
       </HStack>
