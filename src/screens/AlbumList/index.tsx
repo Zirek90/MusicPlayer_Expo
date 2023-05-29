@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Box, FlatList, Heading, Pressable, Text } from 'native-base';
+import { Box, FlatList, Pressable, Text } from 'native-base';
 import { Asset } from 'expo-media-library';
 import { Album } from '@types';
 import { SongItem } from '@components';
@@ -30,10 +30,7 @@ export const AlbumList = () => {
           p={2}
           bgColor={isActive ? COLORS.white : 'transparent'}
           onPress={() => handleAlbum(item)}>
-          <Text
-            fontWeight={isActive ? 'bold' : 'medium'}
-            fontSize="sm"
-            color={isActive ? COLORS.black : COLORS.white}>
+          <Text fontSize="sm" color={isActive ? COLORS.black : COLORS.white}>
             {item.album}
           </Text>
         </Pressable>
@@ -45,9 +42,9 @@ export const AlbumList = () => {
   return (
     <Box>
       {activeAlbum && (
-        <Heading size="md" my={3}>
+        <Text fontSize="2xl" my={3}>
           {activeAlbum.album}
-        </Heading>
+        </Text>
       )}
 
       <Box bgColor={COLORS.background_content_primary}>

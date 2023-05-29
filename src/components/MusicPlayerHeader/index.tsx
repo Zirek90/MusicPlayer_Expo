@@ -1,4 +1,4 @@
-import { Avatar, HStack, Text, VStack, Heading } from 'native-base';
+import { Avatar, HStack, Text, VStack } from 'native-base';
 import { COLORS } from '@global';
 import { withMusicContext } from '@hoc';
 
@@ -18,8 +18,8 @@ const MusicPlayerHeaderComponent = ({ songDetails }: MusicPlayerHeaderProps) => 
         source={require('../../assets/backgrounds/black_bg_2.png')}
       />
       <VStack ml={5} flexShrink={1}>
-        <Heading size="md">Title: {songDetails.title}</Heading>
-        <Text>Album: {songDetails.album}</Text>
+        <Text fontSize="xl">{songDetails.title}</Text>
+        <Text>{songDetails.album}</Text>
       </VStack>
     </HStack>
   );
