@@ -1,7 +1,7 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
-import { usePermissionContext } from './PermissionContext';
+import { usePermissionContext } from '../PermissionContext';
 import { Album } from '@types';
 import { getDirectory, getExtension } from '@utils';
 import { AVAILABLE_EXTENSIONS, DURATION } from '@constants';

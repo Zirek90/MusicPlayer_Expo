@@ -12,10 +12,10 @@ import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
 import { calculateSongPosition } from '@utils';
 import { MusicService, StorageService } from '@service';
-import { useAlbumsContext } from './AlbumsContext';
+import { useAlbumsContext } from '../AlbumContext';
 import { RootState } from '@store/store';
 
-export interface ContextState {
+export interface MusicContextState {
   currentSongDuration: number;
   songProgress: number;
   songDetails: {
@@ -41,7 +41,7 @@ export interface ContextState {
   handleNext: () => Promise<void>;
 }
 
-const MusicContext = createContext<ContextState>({} as ContextState);
+const MusicContext = createContext<MusicContextState>({} as MusicContextState);
 
 export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [song, setSong] = useState<Audio.Sound>();
