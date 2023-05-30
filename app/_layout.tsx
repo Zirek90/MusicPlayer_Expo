@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { SplashScreen, Stack } from 'expo-router';
+import { useFonts } from 'expo-font';
 import { NativeBaseProvider } from 'native-base';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
 import { AlbumsContextProvider, MusicContextProvider, PermissionContextProvider } from '@context';
 import { ThemeConfig } from '@configs';
-import { useFonts } from 'expo-font';
 
 export const unstable_settings = {
   initialRouteName: '(tabs)',

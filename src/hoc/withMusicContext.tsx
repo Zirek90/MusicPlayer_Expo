@@ -1,9 +1,9 @@
 import { ComponentType, MemoExoticComponent, memo } from 'react';
-import { useMusicContext, ContextState } from '@context';
+import { useMusicContext, MusicContextState } from '@context';
 
 export const withMusicContext = <TProps extends unknown, TValue extends unknown>(
   Component: ComponentType<TProps & Record<string, TValue>>,
-  selectors: Record<string, (data: ContextState) => TValue>,
+  selectors: Record<string, (data: MusicContextState) => TValue>,
 ): any => {
   const MemorisedComponent = memo(Component) as MemoExoticComponent<
     ComponentType<Record<string, TValue>>
