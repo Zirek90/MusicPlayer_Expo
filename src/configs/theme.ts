@@ -7,7 +7,7 @@ export const ThemeConfig = extendTheme({
       baseStyle: () => {
         return {
           color: COLORS.white,
-          fontFamily: 'FelipaRegular',
+          fontFamily: 'Kegina',
         };
       },
     },

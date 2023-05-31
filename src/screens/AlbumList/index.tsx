@@ -41,12 +41,6 @@ export const AlbumList = () => {
 
   return (
     <Box>
-      {activeAlbum && (
-        <Text fontSize="2xl" my={3}>
-          {activeAlbum.album}
-        </Text>
-      )}
-
       <Box bgColor={COLORS.background_content_primary}>
         <FlatList
           horizontal
@@ -58,11 +52,16 @@ export const AlbumList = () => {
       </Box>
 
       {activeAlbum && (
-        <FlatList
-          data={activeAlbum.items}
-          keyExtractor={songKeyExtractor}
-          renderItem={renderSongItem}
-        />
+        <>
+          <Text fontSize="2xl" my={3}>
+            {activeAlbum.album}
+          </Text>
+          <FlatList
+            data={activeAlbum.items}
+            keyExtractor={songKeyExtractor}
+            renderItem={renderSongItem}
+          />
+        </>
       )}
     </Box>
   );
