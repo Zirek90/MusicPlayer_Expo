@@ -14,7 +14,7 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const [loaded] = useFonts({
-    FelipaRegular: require('../assets/fonts/Felipa-Regular.ttf'),
+    Kegina: require('../assets/fonts/Kegina.otf'),
   });
 
   if (!loaded) return <SplashScreen />;
