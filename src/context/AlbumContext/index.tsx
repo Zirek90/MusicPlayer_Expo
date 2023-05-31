@@ -92,9 +92,9 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
           allowsRecordingIOS: false,
           interruptionModeIOS: InterruptionModeIOS.DoNotMix,
           playsInSilentModeIOS: true,
-          staysActiveInBackground: false,
+          staysActiveInBackground: true,
           interruptionModeAndroid: InterruptionModeAndroid.DoNotMix,
-          shouldDuckAndroid: false,
+          shouldDuckAndroid: true,
         });
       } catch {}
     };
