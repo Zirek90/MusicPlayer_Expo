@@ -55,6 +55,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [songProgress, setSongProgress] = useState(0);
   const [isSongDone, setIsSongDone] = useState(false);
   const { activeAlbum } = useAlbumsContext();
+  const isPlaying = useSelector((state: RootState) => state.song.songStatus);
   const dispatch = useDispatch();
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
@@ -214,10 +215,12 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const handleForegroundServiceStart = useCallback(
     (title?: string) => {
+      if (isPlaying !== SongStatus.PLAY) return;
+
       ForewardService.stopTask();
       ForewardService.startTask(title || songDetails.title);
     },
-    [songDetails],
+    [songDetails, isPlaying],
   );
 
   useEffect(() => {
