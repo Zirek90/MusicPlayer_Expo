@@ -15,15 +15,19 @@
     "skipLibCheck": true,
     "paths": {
       "@assets/*": ["./src/assets/*"],
+      "@screens": ["./src/screens"],
       "@components": ["./src/components"],
       "@utils": ["./src/utils"],
-      "@hooks": ["./src/hooks"],
-      "@interfaces": ["./src/interfaces"],
+      "@hoc": ["./src/hoc"],
+      "@types": ["./src/types"],
       "@enums": ["./src/enums"],
       "@errors": ["./src/errors"],
       "@configs": ["./src/configs"],
       "@constants": ["./src/constants"],
-      "@store": ["./src/store"]
+      "@store/*": ["./src/store/*"],
+      "@global": ["./src/global"],
+      "@context": ["./src/context"],
+      "@service": ["./src/service"]
     }
   },
   "exclude": ["node_modules", "babel.config.js"]

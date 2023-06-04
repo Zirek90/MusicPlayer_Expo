@@ -1,16 +1,28 @@
-import { Tabs } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Tabs } from 'expo-router';
+import { COLORS } from '@global';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
   color: string;
+  opacity?: number;
 }) {
   return <MaterialCommunityIcons size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: COLORS.background_secondary,
+        },
+        headerTitleAlign: 'center',
+        headerTintColor: COLORS.white,
+        tabBarStyle: {
+          backgroundColor: COLORS.black,
+        },
+      }}>
       <Tabs.Screen
         name="album"
         options={{
@@ -29,7 +41,14 @@ export default function TabLayout() {
         name="playlist"
         options={{
           title: 'Playlists',
-          tabBarIcon: ({ color }) => <TabBarIcon name="bookmark-music" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="bookmark-music" color={color} opacity={0.5} />
+          ),
+        }}
+        listeners={{
+          tabPress: (e: Event) => {
+            e.preventDefault();
+          },
         }}
       />
     </Tabs>

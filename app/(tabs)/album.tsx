@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
-import React from 'react';
+import { BackgroundWrapper } from '@components';
+import { AlbumList } from '@screens';
 
 const Album = () => {
   return (
-    <View>
-      <Text>AlbumPage</Text>
-    </View>
+    <BackgroundWrapper>
+      <AlbumList />
+    </BackgroundWrapper>
   );
 };
 
