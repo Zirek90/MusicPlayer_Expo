@@ -6,12 +6,13 @@ import {
   useEffect,
   useCallback,
 } from 'react';
+import { AppState } from 'react-native';
 import { Audio } from 'expo-av';
 import { useDispatch, useSelector } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
 import { calculateSongPosition } from '@utils';
-import { MusicService, StorageService } from '@service';
+import { MusicService, StorageService, ForewardService } from '@service';
 import { useAlbumsContext } from '../AlbumContext';
 import { RootState } from '@store/store';
 
@@ -205,6 +206,25 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     };
     fetchStoredIndex();
   }, []);
+
+  const handleForegroundServiceStart = useCallback(() => {
+    ForewardService.startTask(songDetails.title);
+  }, [songDetails]);
+
+  useEffect(() => {
+    const appStateListener = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'background') {
+        handleForegroundServiceStart();
+      } else if (nextAppState === 'active') {
+        ForewardService.stopTask();
+      }
+    });
+
+    return () => {
+      appStateListener.remove();
+      ForewardService.removeTasks();
+    };
+  }, [handleForegroundServiceStart]);
 
   return (
     <MusicContext.Provider
