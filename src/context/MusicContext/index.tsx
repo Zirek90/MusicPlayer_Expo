@@ -6,12 +6,13 @@ import {
   useEffect,
   useCallback,
 } from 'react';
+import { AppState } from 'react-native';
 import { Audio } from 'expo-av';
 import { useDispatch, useSelector } from 'react-redux';
 import { SongStatus } from '@enums';
 import { pauseSong, playSong, stopSong, resumeSong, loopSong } from '@store/reducers';
 import { calculateSongPosition } from '@utils';
-import { MusicService, StorageService } from '@service';
+import { MusicService, StorageService, ForewardService } from '@service';
 import { useAlbumsContext } from '../AlbumContext';
 import { RootState } from '@store/store';
 
@@ -54,6 +55,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
   const [songProgress, setSongProgress] = useState(0);
   const [isSongDone, setIsSongDone] = useState(false);
   const { activeAlbum } = useAlbumsContext();
+  const isPlaying = useSelector((state: RootState) => state.song.songStatus);
   const dispatch = useDispatch();
   const isLooping = useSelector((state: RootState) => state.song.isLooping);
 
@@ -193,6 +195,11 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       album: activeAlbum.album,
     });
     manageStorage();
+
+    //* to handle background song changes
+    if (AppState.currentState === 'background') {
+      handleForegroundServiceStart(currentSong.filename);
+    }
   }, [activeAlbum, currentSongIndex]);
 
   useEffect(() => {
@@ -205,6 +212,31 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     };
     fetchStoredIndex();
   }, []);
+
+  const handleForegroundServiceStart = useCallback(
+    (title?: string) => {
+      if (isPlaying !== SongStatus.PLAY) return;
+
+      ForewardService.stopTask();
+      ForewardService.startTask(title || songDetails.title);
+    },
+    [songDetails, isPlaying],
+  );
+
+  useEffect(() => {
+    const appStateListener = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'background') {
+        handleForegroundServiceStart();
+      } else if (nextAppState === 'active') {
+        ForewardService.stopTask();
+      }
+    });
+
+    return () => {
+      appStateListener.remove();
+      ForewardService.removeTasks();
+    };
+  }, [handleForegroundServiceStart]);
 
   return (
     <MusicContext.Provider
