@@ -194,6 +194,11 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       album: activeAlbum.album,
     });
     manageStorage();
+
+    //* to handle background song changes
+    if (AppState.currentState === 'background') {
+      handleForegroundServiceStart(currentSong.filename);
+    }
   }, [activeAlbum, currentSongIndex]);
 
   useEffect(() => {
@@ -207,9 +212,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     fetchStoredIndex();
   }, []);
 
-  const handleForegroundServiceStart = useCallback(() => {
-    ForewardService.startTask(songDetails.title);
-  }, [songDetails]);
+  const handleForegroundServiceStart = useCallback(
+    (title?: string) => {
+      ForewardService.stopTask();
+      ForewardService.startTask(title || songDetails.title);
+    },
+    [songDetails],
+  );
 
   useEffect(() => {
     const appStateListener = AppState.addEventListener('change', nextAppState => {
