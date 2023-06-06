@@ -14,7 +14,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zirek.musicplayer"
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +33,6 @@
         "projectId": "a019001b-713f-4f76-9caf-284f6cf2a1af"
       }
     },
-    "plugins": ["expo-build-properties"]
+    "plugins": ["expo-build-properties", "./plugins/withAndroidSpaces.js"]
   }
 }
