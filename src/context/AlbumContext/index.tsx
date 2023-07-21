@@ -4,7 +4,7 @@ import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import { usePermissionContext } from '../PermissionContext';
 import { Album } from '@types';
 import { getDirectory, getExtension } from '@utils';
-import { AVAILABLE_EXTENSIONS, DURATION } from '@constants';
+import { AVAILABLE_EXTENSIONS, MIN_MUSIC_DURATION } from '@constants';
 import { StorageService } from '@service';
 
 interface ContextState {
@@ -13,7 +13,7 @@ interface ContextState {
   handleActiveAlbum: (album: Album) => void;
 }
 
-const AlbumsContext = createContext<ContextState>({} as ContextState);
+const AlbumsContext = createContext<ContextState | null>(null);
 
 export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
   const [albumList, setAlbumList] = useState<Album[]>([]);
@@ -33,7 +33,8 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
 
     const filterWrongFiles = media.assets.filter(
       file =>
-        file.duration > DURATION && AVAILABLE_EXTENSIONS.includes(getExtension(file.filename)),
+        file.duration > MIN_MUSIC_DURATION &&
+        AVAILABLE_EXTENSIONS.includes(getExtension(file.filename)),
     );
 
     const assignedMusicFiles = assignFilesToDirectories(filterWrongFiles);
@@ -109,5 +110,11 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
 };
 
 export const useAlbumsContext = () => {
-  return useContext(AlbumsContext);
+  const state = useContext(AlbumsContext);
+  if (state === null) {
+    throw new Error('State is still null');
+  } else if (state === undefined) {
+    throw new Error('Attempt to access from outside of context');
+  }
+  return state;
 };

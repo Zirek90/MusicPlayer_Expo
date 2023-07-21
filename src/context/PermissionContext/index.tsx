@@ -5,7 +5,7 @@ interface ContextState {
   permissionGranted: boolean;
 }
 
-const PermissionContext = createContext<ContextState>({} as ContextState);
+const PermissionContext = createContext<ContextState>({ permissionGranted: false });
 
 export const PermissionContextProvider = ({ children }: PropsWithChildren) => {
   const [permissionGranted, setPermissionGranted] = useState(false);
@@ -26,5 +26,9 @@ export const PermissionContextProvider = ({ children }: PropsWithChildren) => {
 };
 
 export const usePermissionContext = () => {
-  return useContext(PermissionContext);
+  const state = useContext(PermissionContext);
+  if (state === undefined) {
+    throw new Error('Attempt to access from outside of context');
+  }
+  return state;
 };
