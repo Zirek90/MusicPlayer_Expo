@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { SongStatus } from '@enums';
 
-type initialStateProps = {
+// toDo it later as it cause more problems than it's worth it
+
+export type initialStateProps = {
   id: string | null;
   songStatus: SongStatus;
   isLooping: boolean;

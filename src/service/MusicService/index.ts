@@ -6,12 +6,13 @@ export const MusicService = {
   play: async (
     uri: string,
     setProgress: (v: number) => void,
-    setIsSongDone: (v: boolean) => void,
+    setCurrentSong: (v: any) => void,
+    // setIsSongDone: (v: boolean) => void,
     songProgress: number,
     currentSongDuration: number,
     isReactivated?: boolean,
   ) => {
-    setIsSongDone(false);
+    setCurrentSong((prev: any) => ({ ...prev, isSongDone: false }));
     const { sound } = await Audio.Sound.createAsync(
       { uri },
       { shouldPlay: false },
@@ -27,7 +28,7 @@ export const MusicService = {
 
           if (status.didJustFinish) {
             if (status.isLooping) return;
-            setIsSongDone(true);
+            setCurrentSong((prev: any) => ({ ...prev, isSongDone: true }));
           }
         }
       },

@@ -1,7 +1,5 @@
 import { HStack } from 'native-base';
-import { useSelector } from 'react-redux';
 import { SongStatus } from '@enums';
-import { RootState } from '@store/store';
 import { COLORS } from '@global';
 import { withMusicContext } from '@hoc';
 import { PressableController } from '../PressableController';
@@ -13,6 +11,8 @@ type PlayerControllersProps = {
   handleLoop: () => Promise<void>;
   handlePrevious: () => Promise<void>;
   handleNext: () => Promise<void>;
+  songStatus: SongStatus | null;
+  isLooping: boolean;
 };
 
 const PlayerControllersComponent = ({
@@ -22,9 +22,9 @@ const PlayerControllersComponent = ({
   handlePrevious,
   handleNext,
   handleMusicPlayerPlay,
+  songStatus,
+  isLooping,
 }: PlayerControllersProps) => {
-  const currentSongStatus = useSelector((state: RootState) => state.song.songStatus);
-  const isLooping = useSelector((state: RootState) => state.song.isLooping);
   return (
     <HStack justifyContent="space-between" alignItems="center" px={1}>
       <HStack alignItems="center">
@@ -44,16 +44,16 @@ const PlayerControllersComponent = ({
       <HStack>
         <PressableController
           size={60}
-          color={currentSongStatus === SongStatus.PAUSE ? COLORS.hold : COLORS.inactive}
+          color={songStatus === SongStatus.PAUSE ? COLORS.hold : COLORS.inactive}
           name="pause-circle-outline"
           handleAction={handlePause}
         />
         <PressableController
           size={60}
-          color={currentSongStatus === SongStatus.PLAY ? COLORS.active : COLORS.inactive}
+          color={songStatus === SongStatus.PLAY ? COLORS.active : COLORS.inactive}
           name="play-circle-outline"
           handleAction={() =>
-            currentSongStatus === SongStatus.STOP ? handleMusicPlayerPlay() : handleResume()
+            songStatus === SongStatus.STOP ? handleMusicPlayerPlay() : handleResume()
           }
         />
       </HStack>
@@ -77,4 +77,6 @@ export const PlayerControllers = withMusicContext(PlayerControllersComponent, {
   handlePrevious: data => data.handlePrevious,
   handleNext: data => data.handleNext,
   handleMusicPlayerPlay: data => data.handleMusicPlayerPlay,
+  songStatus: data => data.currentSong.songStatus,
+  isLooping: data => data.currentSong.isLooping,
 });
