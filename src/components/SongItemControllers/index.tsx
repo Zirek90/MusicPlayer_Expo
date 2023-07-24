@@ -32,6 +32,7 @@ const SongItemControllersComponent = ({
   songStatus,
 }: SongItemControllersProps) => {
   const sameId = id === data.id;
+  console.log('rerender');
 
   const handlePlaySong = () => {
     handlePlay(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration, index);
@@ -46,11 +47,7 @@ const SongItemControllersComponent = ({
               <PressableController color={COLORS.hold} name="pause" handleAction={handlePause} />
             )}
 
-            <PressableController
-              color={songStatus !== SongStatus.PAUSE ? COLORS.active : COLORS.inactive}
-              name="play"
-              handleAction={handleResume}
-            />
+            <PressableController color={COLORS.active} name="play" handleAction={handleResume} />
           </>
         ))}
       {!sameId && (

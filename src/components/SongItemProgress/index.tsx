@@ -1,12 +1,16 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '@global';
 import { withMusicContext } from '@hoc';
+import { useSelector } from 'react-redux';
+import { RootState } from '@store/store';
 
 type SongItemProgressProps = {
   songProgress: number;
 };
 
-const SongItemProgressComponent = ({ songProgress }: SongItemProgressProps) => {
+export const SongItemProgress = () => {
+  const songProgress = useSelector((state: RootState) => state.song.progress);
+
   return (
     <LinearGradient
       colors={[COLORS.progress_bar_start, COLORS.progress_bar_end]}
@@ -17,6 +21,6 @@ const SongItemProgressComponent = ({ songProgress }: SongItemProgressProps) => {
   );
 };
 
-export const SongItemProgress = withMusicContext(SongItemProgressComponent, {
-  songProgress: data => data.songProgress,
-});
+// export const SongItemProgress = withMusicContext(SongItemProgressComponent, {
+//   songProgress: data => data.songProgress,
+// });

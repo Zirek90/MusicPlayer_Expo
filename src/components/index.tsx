@@ -1,5 +1,6 @@
 export { BackgroundWrapper } from './BackgroundWrapper';
 export { SongItem } from './SongItem';
+export { SongItemInformation } from './SongItemInformation';
 export { SongItemProgress } from './SongItemProgress';
 export { SongItemControllers } from './SongItemControllers';
 export { PressableController } from './PressableController';

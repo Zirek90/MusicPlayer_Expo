@@ -1,11 +1,10 @@
-import { Box, HStack, Text } from 'native-base';
+import { Box } from 'native-base';
 import { Asset } from 'expo-media-library';
-import { durationToTime, trimString } from '@utils';
 import { COLORS } from '@global';
-import { PressableController } from '../PressableController';
 import { SongItemProgress } from '../SongItemProgress';
 import { SongItemControllers } from '../SongItemControllers';
 import { withMusicContext } from '@hoc';
+import { SongItemInformation } from '../SongItemInformation';
 
 type SongItemProps = {
   data: Asset;
@@ -15,7 +14,6 @@ type SongItemProps = {
 const SongItemComponent = ({ data, index, id }: SongItemProps) => {
   const sameId = id === data.id;
 
-  const handleAction = () => {};
   return (
     <Box
       mx={3}
@@ -29,17 +27,7 @@ const SongItemComponent = ({ data, index, id }: SongItemProps) => {
       borderBottomWidth={2}>
       {sameId && <SongItemProgress />}
 
-      <HStack alignItems="center">
-        <PressableController
-          size={15}
-          color={COLORS.inactive}
-          name="playlist-plus"
-          handleAction={handleAction}
-        />
-        <Text ml={2}>
-          {trimString(data.filename)} - ({durationToTime(data.duration)})
-        </Text>
-      </HStack>
+      <SongItemInformation data={data} />
 
       <SongItemControllers data={data} index={index} />
     </Box>

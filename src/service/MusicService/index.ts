@@ -7,7 +7,6 @@ export const MusicService = {
     uri: string,
     setProgress: (v: number) => void,
     setCurrentSong: (v: any) => void,
-    // setIsSongDone: (v: boolean) => void,
     songProgress: number,
     currentSongDuration: number,
     isReactivated?: boolean,

@@ -94,7 +94,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       setSong(sound);
       StorageService.set('songDuration', duration);
     },
-    [song, songProgress, currentSong?.duration],
+    [song, songProgress, currentSong.duration],
   );
 
   const handleResume = useCallback(async () => {
@@ -171,7 +171,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       currentSong.index,
       true,
     );
-  }, [activeAlbum, currentSong]);
+  }, [activeAlbum, currentSong.index]);
 
   const handleSongProgress = useCallback(
     async (progress: number) => {
@@ -180,18 +180,18 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         await song.setPositionAsync(currentPositon);
       }
     },
-    [song, currentSong],
+    [song, currentSong.duration],
   );
 
   const manageStorage = useCallback(async () => {
     await StorageService.set('album', activeAlbum!);
     await StorageService.set('songIndex', currentSong.index!);
-  }, [activeAlbum, currentSong]);
+  }, [activeAlbum, currentSong.index]);
 
   useEffect(() => {
     if (!currentSong.isSongDone) return;
     handleNext();
-  }, [currentSong]);
+  }, [currentSong.isSongDone]);
 
   useEffect(() => {
     if (!activeAlbum) return;
@@ -210,7 +210,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     if (AppState.currentState === 'background') {
       // ForewardService.updateTask(activeSong.filename);
     }
-  }, [activeAlbum, currentSong]);
+  }, [activeAlbum, currentSong.index]);
 
   useEffect(() => {
     const fetchStoredIndex = async () => {
@@ -227,7 +227,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     if (currentSong.songStatus !== SongStatus.PLAY) return;
 
     // ForewardService.startTask(songDetails.title);
-  }, [songDetails, currentSong]);
+  }, [songDetails, currentSong.songStatus]);
 
   useEffect(() => {
     const appStateListener = AppState.addEventListener('change', nextAppState => {
