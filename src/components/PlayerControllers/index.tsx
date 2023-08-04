@@ -25,6 +25,7 @@ const PlayerControllersComponent = ({
   songStatus,
   isLooping,
 }: PlayerControllersProps) => {
+  console.log({ songStatus });
   return (
     <HStack justifyContent="space-between" alignItems="center" px={1}>
       <HStack alignItems="center">
@@ -53,7 +54,7 @@ const PlayerControllersComponent = ({
           color={songStatus === SongStatus.PLAY ? COLORS.active : COLORS.inactive}
           name="play-circle-outline"
           handleAction={() =>
-            songStatus === SongStatus.STOP ? handleMusicPlayerPlay() : handleResume()
+            songStatus === SongStatus.PAUSE ? handleResume() : handleMusicPlayerPlay()
           }
         />
       </HStack>

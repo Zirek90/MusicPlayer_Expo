@@ -32,7 +32,7 @@ const SongItemControllersComponent = ({
   songStatus,
 }: SongItemControllersProps) => {
   const sameId = id === data.id;
-  console.log('rerender');
+  // console.log('rerender', { id });
 
   const handlePlaySong = () => {
     handlePlay(SongStatus.PLAY, data.id, data.filename, data.uri, data.duration, index);

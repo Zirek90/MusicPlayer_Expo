@@ -10,7 +10,7 @@ import { AppState } from 'react-native';
 import { Audio } from 'expo-av';
 import { SongStatus } from '@enums';
 import { calculateSongPosition } from '@utils';
-import { MusicService, StorageService, ForewardService } from '@service';
+import { MusicService, StorageService } from '@service';
 import { useAlbumsContext } from '../AlbumContext';
 
 type CurrentSong = {
@@ -206,10 +206,10 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     });
     manageStorage();
 
-    //* to handle background song changes
-    if (AppState.currentState === 'background') {
-      // ForewardService.updateTask(activeSong.filename);
-    }
+    // //* to handle background song changes
+    // if (AppState.currentState === 'background') {
+    //   ForewardService.updateTask(activeSong.filename);
+    // }
   }, [activeAlbum, currentSong.index]);
 
   useEffect(() => {
@@ -223,26 +223,26 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     fetchStoredIndex();
   }, []);
 
-  const handleForegroundServiceStart = useCallback(() => {
-    if (currentSong.songStatus !== SongStatus.PLAY) return;
+  // const handleForegroundServiceStart = useCallback(() => {
+  //   if (currentSong.songStatus !== SongStatus.PLAY) return;
 
-    // ForewardService.startTask(songDetails.title);
-  }, [songDetails, currentSong.songStatus]);
+  //   // ForewardService.startTask(songDetails.title);
+  // }, [songDetails, currentSong.songStatus]);
 
-  useEffect(() => {
-    const appStateListener = AppState.addEventListener('change', nextAppState => {
-      if (nextAppState === 'background') {
-        handleForegroundServiceStart();
-      } else if (nextAppState === 'active') {
-        // ForewardService.stopTask();
-      }
-    });
+  // useEffect(() => {
+  //   const appStateListener = AppState.addEventListener('change', nextAppState => {
+  //     if (nextAppState === 'background') {
+  //       handleForegroundServiceStart();
+  //     } else if (nextAppState === 'active') {
+  //       // ForewardService.stopTask();
+  //     }
+  //   });
 
-    return () => {
-      appStateListener.remove();
-      // ForewardService.removeTasks();
-    };
-  }, [handleForegroundServiceStart]);
+  //   return () => {
+  //     appStateListener.remove();
+  //     // ForewardService.removeTasks();
+  //   };
+  // }, [handleForegroundServiceStart]);
 
   return (
     <MusicContext.Provider

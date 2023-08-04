@@ -5,7 +5,12 @@ import { NativeBaseProvider } from 'native-base';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from '@store/store';
 import { setBackground } from '@store/reducers/backgroundReducer';
-import { AlbumsContextProvider, MusicContextProvider, PermissionContextProvider } from '@context';
+import {
+  AlbumsContextProvider,
+  MusicContextProvider,
+  PermissionContextProvider,
+  ForeroundActivityProvider,
+} from '@context';
 import { ThemeConfig } from '@configs';
 
 export const unstable_settings = {
@@ -24,9 +29,11 @@ export default function RootLayout() {
       <PermissionContextProvider>
         <AlbumsContextProvider>
           <MusicContextProvider>
-            <NativeBaseProvider theme={ThemeConfig}>
-              <RootLayoutNav />
-            </NativeBaseProvider>
+            <ForeroundActivityProvider>
+              <NativeBaseProvider theme={ThemeConfig}>
+                <RootLayoutNav />
+              </NativeBaseProvider>
+            </ForeroundActivityProvider>
           </MusicContextProvider>
         </AlbumsContextProvider>
       </PermissionContextProvider>
