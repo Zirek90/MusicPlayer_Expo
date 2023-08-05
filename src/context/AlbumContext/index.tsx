@@ -1,4 +1,11 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import { usePermissionContext } from '../PermissionContext';
@@ -68,9 +75,9 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
     }, []);
   };
 
-  const handleActiveAlbum = (album: Album) => {
+  const handleActiveAlbum = useCallback((album: Album) => {
     setActiveAlbum(album);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchStoredAlbum = async () => {
