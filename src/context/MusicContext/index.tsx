@@ -12,7 +12,7 @@ import { calculateSongPosition } from '@utils';
 import { MusicService, StorageService } from '@service';
 import { useAlbumsContext } from '../AlbumContext';
 
-type CurrentSong = {
+export type CurrentSong = {
   id: string;
   filename: string;
   isLooping: boolean;
@@ -84,7 +84,6 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         uri,
         setSongProgress,
         setCurrentSong,
-        songProgress,
         currentSong.duration,
         isReactivated,
       );
@@ -93,7 +92,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
       setSong(sound);
       StorageService.set('songDuration', duration);
     },
-    [song, songProgress, currentSong.duration],
+    [song, currentSong.duration],
   );
 
   const handleResume = useCallback(async () => {
@@ -208,7 +207,7 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const fetchStoredIndex = async () => {
-      const { songIndex, songDuration, songProgress: progress } = await StorageService.get();
+      const { songIndex, songDuration, songProgress: progress } = await StorageService.getAll();
 
       songIndex && setCurrentSong(prev => ({ ...prev, index: songIndex }));
       songDuration && setCurrentSong(prev => ({ ...prev, duration: Number(songDuration) }));

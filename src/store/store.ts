@@ -9,3 +9,5 @@ export const store = configureStore({
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+
+// toDo unused if project done and still no need for redux then remove the store and redux libraries

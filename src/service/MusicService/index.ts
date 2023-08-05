@@ -1,17 +1,17 @@
 import { Audio } from 'expo-av';
 import { calculateProgress, calculateSongPosition } from '@utils';
 import { StorageService } from '../StorageService';
+import { CurrentSong } from 'src/context/MusicContext';
 
 export const MusicService = {
   play: async (
     uri: string,
     setProgress: (v: number) => void,
-    setCurrentSong: (v: any) => void,
-    songProgress: number,
+    setCurrentSong: (v: (value: CurrentSong) => CurrentSong) => void,
     currentSongDuration: number,
     isReactivated?: boolean,
   ) => {
-    setCurrentSong((prev: any) => ({ ...prev, isSongDone: false }));
+    setCurrentSong(prev => ({ ...prev, isSongDone: false }));
     const { sound } = await Audio.Sound.createAsync(
       { uri },
       { shouldPlay: false },
@@ -27,13 +27,14 @@ export const MusicService = {
 
           if (status.didJustFinish) {
             if (status.isLooping) return;
-            setCurrentSong((prev: any) => ({ ...prev, isSongDone: true }));
+            setCurrentSong(prev => ({ ...prev, isSongDone: true }));
           }
         }
       },
     );
     if (isReactivated) {
-      const currentPositon = calculateSongPosition(songProgress, currentSongDuration);
+      const progress = await StorageService.getProgress();
+      const currentPositon = calculateSongPosition(progress, currentSongDuration);
       await sound.setPositionAsync(currentPositon);
     }
     await sound.playAsync();

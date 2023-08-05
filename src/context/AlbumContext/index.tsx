@@ -74,7 +74,7 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const fetchStoredAlbum = async () => {
-      const { album } = await StorageService.get();
+      const { album } = await StorageService.getAll();
       if (!album) return;
       setActiveAlbum(album);
     };
