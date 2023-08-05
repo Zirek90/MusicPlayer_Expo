@@ -25,7 +25,6 @@ const PlayerControllersComponent = ({
   songStatus,
   isLooping,
 }: PlayerControllersProps) => {
-  console.log({ songStatus });
   return (
     <HStack justifyContent="space-between" alignItems="center" px={1}>
       <HStack alignItems="center">

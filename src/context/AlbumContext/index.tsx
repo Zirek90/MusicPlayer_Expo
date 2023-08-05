@@ -7,13 +7,13 @@ import { getDirectory, getExtension } from '@utils';
 import { AVAILABLE_EXTENSIONS, MIN_MUSIC_DURATION } from '@constants';
 import { StorageService } from '@service';
 
-interface ContextState {
+interface AlbumsContextState {
   albumList: Album[];
   activeAlbum: Album | null;
   handleActiveAlbum: (album: Album) => void;
 }
 
-const AlbumsContext = createContext<ContextState | null>(null);
+const AlbumsContext = createContext<AlbumsContextState | null>(null);
 
 export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
   const [albumList, setAlbumList] = useState<Album[]>([]);

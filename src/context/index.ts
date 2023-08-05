@@ -1,3 +1,4 @@
+export { BackgroundProvider, useBackgroundContext } from './BackgroundContext';
 export { PermissionContextProvider, usePermissionContext } from './PermissionContext';
 export { AlbumsContextProvider, useAlbumsContext } from './AlbumContext';
 export { MusicContextProvider, useMusicContext } from './MusicContext';
