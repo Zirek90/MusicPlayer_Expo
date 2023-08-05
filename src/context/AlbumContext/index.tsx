@@ -1,19 +1,26 @@
-import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
+import {
+  PropsWithChildren,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import * as MediaLibrary from 'expo-media-library';
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av';
 import { usePermissionContext } from '../PermissionContext';
 import { Album } from '@types';
 import { getDirectory, getExtension } from '@utils';
-import { AVAILABLE_EXTENSIONS, DURATION } from '@constants';
+import { AVAILABLE_EXTENSIONS, MIN_MUSIC_DURATION } from '@constants';
 import { StorageService } from '@service';
 
-interface ContextState {
+interface AlbumsContextState {
   albumList: Album[];
   activeAlbum: Album | null;
   handleActiveAlbum: (album: Album) => void;
 }
 
-const AlbumsContext = createContext<ContextState>({} as ContextState);
+const AlbumsContext = createContext<AlbumsContextState | null>(null);
 
 export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
   const [albumList, setAlbumList] = useState<Album[]>([]);
@@ -33,7 +40,8 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
 
     const filterWrongFiles = media.assets.filter(
       file =>
-        file.duration > DURATION && AVAILABLE_EXTENSIONS.includes(getExtension(file.filename)),
+        file.duration > MIN_MUSIC_DURATION &&
+        AVAILABLE_EXTENSIONS.includes(getExtension(file.filename)),
     );
 
     const assignedMusicFiles = assignFilesToDirectories(filterWrongFiles);
@@ -67,13 +75,13 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
     }, []);
   };
 
-  const handleActiveAlbum = (album: Album) => {
+  const handleActiveAlbum = useCallback((album: Album) => {
     setActiveAlbum(album);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchStoredAlbum = async () => {
-      const { album } = await StorageService.get();
+      const { album } = await StorageService.getAll();
       if (!album) return;
       setActiveAlbum(album);
     };
@@ -109,5 +117,11 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
 };
 
 export const useAlbumsContext = () => {
-  return useContext(AlbumsContext);
+  const state = useContext(AlbumsContext);
+  if (state === null) {
+    throw new Error('State is still null');
+  } else if (state === undefined) {
+    throw new Error('Attempt to access from outside of context');
+  }
+  return state;
 };

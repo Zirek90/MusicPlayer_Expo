@@ -1,26 +1,24 @@
-import { Box, HStack, Text } from 'native-base';
-import { useSelector } from 'react-redux';
-import { RootState } from '@store/store';
+import { Box } from 'native-base';
 import { Asset } from 'expo-media-library';
-import { durationToTime, trimString } from '@utils';
 import { COLORS } from '@global';
-import { PressableController } from '../PressableController';
 import { SongItemProgress } from '../SongItemProgress';
 import { SongItemControllers } from '../SongItemControllers';
+import { withMusicContext } from '@hoc';
+import { SongItemInformation } from '../SongItemInformation';
 
 type SongItemProps = {
   data: Asset;
   index: number;
+  id: string;
 };
-
-export const SongItem = ({ data, index }: SongItemProps) => {
-  const currentSong = useSelector((state: RootState) => state.song);
-  const sameId = currentSong.id === data.id;
+const SongItemComponent = ({ data, index, id }: SongItemProps) => {
+  const sameId = id === data.id;
 
   return (
     <Box
       mx={3}
       p={1}
+      h={45}
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
@@ -29,19 +27,13 @@ export const SongItem = ({ data, index }: SongItemProps) => {
       borderBottomWidth={2}>
       {sameId && <SongItemProgress />}
 
-      <HStack alignItems="center">
-        <PressableController
-          size={15}
-          color={COLORS.inactive}
-          name="playlist-plus"
-          handleAction={() => {}}
-        />
-        <Text ml={2}>
-          {trimString(data.filename)} - ({durationToTime(data.duration)})
-        </Text>
-      </HStack>
+      <SongItemInformation data={data} />
 
       <SongItemControllers data={data} index={index} />
     </Box>
   );
 };
+
+export const SongItem = withMusicContext(SongItemComponent, {
+  id: data => data.currentSong.id,
+});

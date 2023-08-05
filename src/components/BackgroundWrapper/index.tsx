@@ -1,20 +1,16 @@
 import { PropsWithChildren } from 'react';
 import { View, Box } from 'native-base';
-import { ImageBackground, ImageSourcePropType } from 'react-native';
-import { useSelector } from 'react-redux';
-import { RootState } from '@store/store';
+import { ImageBackground } from 'react-native';
 import { COLORS } from '@global';
+import { useBackgroundContext } from '@context';
 
 export const BackgroundWrapper = ({ children }: PropsWithChildren) => {
-  const background = useSelector((state: RootState) => state.background.bgImage);
+  const { background } = useBackgroundContext();
 
   return (
     <View flex={1} bgColor={COLORS.black}>
       <ImageBackground
-        source={
-          (background?.path as ImageSourcePropType) ||
-          require('../../assets/backgrounds/black_bg_1.png') // as fallback
-        }
+        source={background}
         resizeMode="cover"
         style={{
           flex: 1,

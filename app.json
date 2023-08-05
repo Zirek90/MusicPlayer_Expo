@@ -33,6 +33,10 @@
         "projectId": "a019001b-713f-4f76-9caf-284f6cf2a1af"
       }
     },
-    "plugins": ["expo-build-properties", "./plugins/withAndroidSpaces.js"]
+    "plugins": [
+      "expo-build-properties",
+      "./plugins/withAndroidSpaces.js",
+      "./plugins/withCustomTheme.js"
+    ]
   }
 }

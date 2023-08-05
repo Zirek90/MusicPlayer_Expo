@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
 import { SplashScreen, Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { NativeBaseProvider } from 'native-base';
-import { Provider, useDispatch } from 'react-redux';
-import { store } from '@store/store';
-import { setBackground } from '@store/reducers/backgroundReducer';
-import { AlbumsContextProvider, MusicContextProvider, PermissionContextProvider } from '@context';
+import {
+  AlbumsContextProvider,
+  MusicContextProvider,
+  PermissionContextProvider,
+  ForeroundActivityProvider,
+  BackgroundProvider,
+} from '@context';
 import { ThemeConfig } from '@configs';
 
 export const unstable_settings = {
@@ -20,27 +22,23 @@ export default function RootLayout() {
   if (!loaded) return <SplashScreen />;
 
   return (
-    <Provider store={store}>
+    <BackgroundProvider>
       <PermissionContextProvider>
         <AlbumsContextProvider>
           <MusicContextProvider>
-            <NativeBaseProvider theme={ThemeConfig}>
-              <RootLayoutNav />
-            </NativeBaseProvider>
+            <ForeroundActivityProvider>
+              <NativeBaseProvider theme={ThemeConfig}>
+                <RootLayoutNav />
+              </NativeBaseProvider>
+            </ForeroundActivityProvider>
           </MusicContextProvider>
         </AlbumsContextProvider>
       </PermissionContextProvider>
-    </Provider>
+    </BackgroundProvider>
   );
 }
 
 function RootLayoutNav() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(setBackground());
-  }, []);
-
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
