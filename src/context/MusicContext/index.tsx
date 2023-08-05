@@ -10,17 +10,8 @@ import { Audio } from 'expo-av';
 import { SongStatus } from '@enums';
 import { calculateSongPosition } from '@utils';
 import { MusicService, StorageService } from '@service';
+import { CurrentSong } from '@types';
 import { useAlbumsContext } from '../AlbumContext';
-
-export type CurrentSong = {
-  id: string;
-  filename: string;
-  isLooping: boolean;
-  songStatus: SongStatus | null;
-  isSongDone: boolean;
-  duration: number;
-  index: number;
-};
 
 export interface MusicContextState {
   currentSong: CurrentSong;

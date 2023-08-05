@@ -1,7 +1,7 @@
 import { Audio } from 'expo-av';
 import { calculateProgress, calculateSongPosition } from '@utils';
+import { CurrentSong } from '@types';
 import { StorageService } from '../StorageService';
-import { CurrentSong } from 'src/context/MusicContext';
 
 export const MusicService = {
   play: async (
