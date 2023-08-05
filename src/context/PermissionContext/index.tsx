@@ -1,11 +1,11 @@
 import { PropsWithChildren, createContext, useContext, useEffect, useState } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
-interface ContextState {
+interface PermissionContextState {
   permissionGranted: boolean;
 }
 
-const PermissionContext = createContext<ContextState>({ permissionGranted: false });
+const PermissionContext = createContext<PermissionContextState>({ permissionGranted: false });
 
 export const PermissionContextProvider = ({ children }: PropsWithChildren) => {
   const [permissionGranted, setPermissionGranted] = useState(false);
