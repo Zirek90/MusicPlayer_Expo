@@ -9,25 +9,28 @@ const ForeroundActivityContext = createContext({});
 
 export const ForeroundActivityProvider = ({ children }: PropsWithChildren) => {
   const { activeAlbum } = useAlbumsContext();
-  const { currentSong, songDetails } = useMusicContext();
+  const {
+    currentSong: { songStatus, index },
+    songDetails,
+  } = useMusicContext();
 
   const handleForegroundServiceStart = useCallback(() => {
-    if (currentSong.songStatus !== SongStatus.PLAY) return;
+    if (songStatus !== SongStatus.PLAY) return;
 
     ForewardService.startTask(songDetails.title);
-  }, [songDetails, currentSong.songStatus]);
+  }, [songDetails, songStatus]);
 
   useEffect(() => {
     if (!activeAlbum) return;
-    const activeSong = activeAlbum.items[currentSong.index];
+    const activeSong = activeAlbum.items[index];
 
-    if (!activeSong) return;
+    if (!activeSong || songStatus !== SongStatus.PLAY) return;
 
     //* to handle background song changes
     if (AppState.currentState === 'background') {
       ForewardService.updateTask(activeSong.filename);
     }
-  }, [activeAlbum, currentSong.index]);
+  }, [activeAlbum, index]);
 
   useEffect(() => {
     const appStateListener = AppState.addEventListener('change', nextAppState => {
