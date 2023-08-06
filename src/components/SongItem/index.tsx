@@ -13,6 +13,7 @@ type SongItemProps = {
 };
 const SongItemComponent = ({ data, index, id }: SongItemProps) => {
   const sameId = id === data.id;
+  console.log({ id });
 
   return (
     <Box
