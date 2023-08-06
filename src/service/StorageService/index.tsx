@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Album } from '@types';
+import { Album, CurrentSong } from '@types';
 
 export const StorageService = {
   getProgress: async () => {
@@ -9,18 +9,16 @@ export const StorageService = {
   },
   getAll: async () => {
     const stringifiedAlbum = await AsyncStorage.getItem('album');
-    const stringifiedSongIndex = await AsyncStorage.getItem('songIndex');
     const stringifiedSongProgress = await AsyncStorage.getItem('songProgress');
-    const stringifiedSongDuration = await AsyncStorage.getItem('songDuration');
+    const stringifiedcurrentSong = await AsyncStorage.getItem('currentSong');
 
     const album = stringifiedAlbum ? JSON.parse(stringifiedAlbum) : null;
-    const songIndex = stringifiedSongIndex ? JSON.parse(stringifiedSongIndex) : null;
     const songProgress = stringifiedSongProgress ? JSON.parse(stringifiedSongProgress) : null;
-    const songDuration = stringifiedSongDuration ? JSON.parse(stringifiedSongDuration) : null;
+    const currentSong = stringifiedcurrentSong ? JSON.parse(stringifiedcurrentSong) : null;
 
-    return { album, songIndex, songProgress, songDuration };
+    return { album, songProgress, currentSong };
   },
-  set: async (key: string, item: Album | number) => {
+  set: async (key: string, item: Album | CurrentSong | number) => {
     const stringifiedItem = JSON.stringify(item);
     await AsyncStorage.setItem(key, stringifiedItem);
   },
