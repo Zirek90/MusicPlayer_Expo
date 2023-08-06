@@ -21,7 +21,6 @@ export interface MusicContextState {
     album: string;
   };
   handleSongProgress: (progress: number) => Promise<void>;
-  handleMusicPlayerPlay: () => Promise<void>;
   handlePlay: (
     songStatus: SongStatus,
     id: string,
@@ -81,27 +80,31 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
       setCurrentSong(prev => ({ ...prev, id, filename, duration, songStatus, index }));
       setSong(sound);
-      StorageService.set('songDuration', duration);
     },
     [song, currentSong.duration],
   );
 
   const handleResume = useCallback(async () => {
-    if (!song) return;
+    if (!activeAlbum) return;
+    if (song) {
+      await MusicService.resume(song);
+      setCurrentSong(prev => ({ ...prev, songStatus: SongStatus.PLAY }));
+      return;
+    }
 
-    await MusicService.resume(song);
-    setCurrentSong(prev => ({ ...prev, songStatus: SongStatus.PLAY }));
-  }, [song]);
+    //* in case we don't have active song, we get it from active album
 
-  // const handleStop = useCallback(async () => {
-  //   if (!song) return;
-
-  //   await MusicService.stop(song);
-  //   setCurrentSong(prev => ({ ...prev, songStatus: SongStatus.STOP }));
-
-  //   setSongProgress(0);
-  //   setSong(undefined);
-  // }, [song]);
+    const activeSong = activeAlbum.items[currentSong.index];
+    handlePlay(
+      SongStatus.PLAY,
+      activeSong.id,
+      activeSong.filename,
+      activeSong.uri,
+      activeSong.duration,
+      currentSong.index,
+      true,
+    );
+  }, [activeAlbum, currentSong.index]);
 
   const handlePause = useCallback(async () => {
     if (!song) return;
@@ -147,21 +150,6 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     await handlePlay(SongStatus.PLAY, id, filename, uri, duration, nextIndex);
   }, [activeAlbum, currentSong, handlePlay]);
 
-  const handleMusicPlayerPlay = useCallback(async () => {
-    if (!activeAlbum) return;
-
-    const activeSong = activeAlbum.items[currentSong.index];
-    handlePlay(
-      SongStatus.PLAY,
-      activeSong.id,
-      activeSong.filename,
-      activeSong.uri,
-      activeSong.duration,
-      currentSong.index,
-      true,
-    );
-  }, [activeAlbum, currentSong.index]);
-
   const handleSongProgress = useCallback(
     async (progress: number) => {
       if (song) {
@@ -174,8 +162,8 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   const manageStorage = useCallback(async () => {
     await StorageService.set('album', activeAlbum!);
-    await StorageService.set('songIndex', currentSong.index!);
-  }, [activeAlbum, currentSong.index]);
+    await StorageService.set('currentSong', currentSong);
+  }, [activeAlbum, currentSong]);
 
   useEffect(() => {
     if (!currentSong.isSongDone) return;
@@ -186,8 +174,13 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
     if (!activeAlbum) return;
     const activeSong = activeAlbum.items[currentSong.index];
 
-    // toDo this require fix, change song in music player even when change only albm tab
     if (!activeSong) return;
+    if (
+      currentSong.songStatus === SongStatus.PLAY &&
+      currentSong.filename !== activeSong.filename
+    ) {
+      return;
+    }
 
     setSongDetails({
       title: activeSong.filename,
@@ -198,10 +191,9 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     const fetchStoredIndex = async () => {
-      const { songIndex, songDuration, songProgress: progress } = await StorageService.getAll();
+      const { currentSong: songValue, songProgress: progress } = await StorageService.getAll();
 
-      songIndex && setCurrentSong(prev => ({ ...prev, index: songIndex }));
-      songDuration && setCurrentSong(prev => ({ ...prev, duration: Number(songDuration) }));
+      songValue && setCurrentSong(songValue);
       progress && setSongProgress(Number(progress));
     };
     fetchStoredIndex();
@@ -220,7 +212,6 @@ export const MusicContextProvider = ({ children }: PropsWithChildren) => {
         handleNext,
         handlePrevious,
         handleSongProgress,
-        handleMusicPlayerPlay,
       }}>
       {children}
     </MusicContext.Provider>
