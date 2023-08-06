@@ -10,11 +10,11 @@ export const StorageService = {
   getAll: async () => {
     const stringifiedAlbum = await AsyncStorage.getItem('album');
     const stringifiedSongProgress = await AsyncStorage.getItem('songProgress');
-    const stringifiedcurrentSong = await AsyncStorage.getItem('currentSong');
+    const stringifiedCurrentSong = await AsyncStorage.getItem('currentSong');
 
     const album = stringifiedAlbum ? JSON.parse(stringifiedAlbum) : null;
     const songProgress = stringifiedSongProgress ? JSON.parse(stringifiedSongProgress) : null;
-    const currentSong = stringifiedcurrentSong ? JSON.parse(stringifiedcurrentSong) : null;
+    const currentSong = stringifiedCurrentSong ? JSON.parse(stringifiedCurrentSong) : null;
 
     return { album, songProgress, currentSong };
   },
