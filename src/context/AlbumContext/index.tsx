@@ -18,6 +18,8 @@ interface AlbumsContextState {
   albumList: Album[];
   activeAlbum: Album | null;
   handleActiveAlbum: (album: Album) => void;
+  currentlyPlayedAlbum: Album | null;
+  handleCurrentlyPlayedAlbum: (album: Album) => void;
 }
 
 const AlbumsContext = createContext<AlbumsContextState | null>(null);
@@ -25,6 +27,7 @@ const AlbumsContext = createContext<AlbumsContextState | null>(null);
 export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
   const [albumList, setAlbumList] = useState<Album[]>([]);
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(null);
+  const [currentlyPlayedAlbum, setCurrentlyPlayedAlbum] = useState<Album | null>(null);
 
   const { permissionGranted } = usePermissionContext();
 
@@ -79,11 +82,15 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
     setActiveAlbum(album);
   }, []);
 
+  const handleCurrentlyPlayedAlbum = useCallback((album: Album) => {
+    setCurrentlyPlayedAlbum(album);
+  }, []);
+
   useEffect(() => {
     const fetchStoredAlbum = async () => {
       const { album } = await StorageService.getAll();
       if (!album) return;
-      setActiveAlbum(album);
+      setCurrentlyPlayedAlbum(album);
     };
     fetchStoredAlbum();
   }, []);
@@ -110,7 +117,14 @@ export const AlbumsContextProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <AlbumsContext.Provider value={{ albumList, activeAlbum, handleActiveAlbum }}>
+    <AlbumsContext.Provider
+      value={{
+        albumList,
+        activeAlbum,
+        handleActiveAlbum,
+        currentlyPlayedAlbum,
+        handleCurrentlyPlayedAlbum,
+      }}>
       {children}
     </AlbumsContext.Provider>
   );

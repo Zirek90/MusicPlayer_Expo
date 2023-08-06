@@ -5,11 +5,12 @@ import { COLORS } from '@global';
 import { useAlbumsContext } from '@context';
 
 export const AlbumTitles = () => {
-  const { albumList, activeAlbum, handleActiveAlbum } = useAlbumsContext();
+  const { albumList, activeAlbum, currentlyPlayedAlbum, handleActiveAlbum } = useAlbumsContext();
+  const albumSource = activeAlbum || currentlyPlayedAlbum;
 
   const renderAlbumItem = useCallback(
     ({ item }: { item: Album }) => {
-      const isActive = item.album === activeAlbum?.album;
+      const isActive = item.album === albumSource?.album;
       return (
         <Pressable
           p={2}
@@ -21,7 +22,7 @@ export const AlbumTitles = () => {
         </Pressable>
       );
     },
-    [activeAlbum, handleActiveAlbum],
+    [albumSource, handleActiveAlbum],
   );
 
   const albumKeyExtractor = useCallback((item: Album) => item.album, []);

@@ -5,7 +5,6 @@ import { withMusicContext } from '@hoc';
 import { PressableController } from '../PressableController';
 
 type PlayerControllersProps = {
-  handleMusicPlayerPlay: () => Promise<void>;
   handleResume: () => Promise<void>;
   handlePause: () => Promise<void>;
   handleLoop: () => Promise<void>;
@@ -21,7 +20,6 @@ const PlayerControllersComponent = ({
   handleLoop,
   handlePrevious,
   handleNext,
-  handleMusicPlayerPlay,
   songStatus,
   isLooping,
 }: PlayerControllersProps) => {
@@ -52,9 +50,7 @@ const PlayerControllersComponent = ({
           size={60}
           color={songStatus === SongStatus.PLAY ? COLORS.active : COLORS.inactive}
           name="play-circle-outline"
-          handleAction={() =>
-            songStatus === SongStatus.PAUSE ? handleResume() : handleMusicPlayerPlay()
-          }
+          handleAction={() => handleResume()}
         />
       </HStack>
       <HStack alignItems="center">
@@ -76,7 +72,6 @@ export const PlayerControllers = withMusicContext(PlayerControllersComponent, {
   handleLoop: data => data.handleLoop,
   handlePrevious: data => data.handlePrevious,
   handleNext: data => data.handleNext,
-  handleMusicPlayerPlay: data => data.handleMusicPlayerPlay,
   songStatus: data => data.currentSong.songStatus,
   isLooping: data => data.currentSong.isLooping,
 });

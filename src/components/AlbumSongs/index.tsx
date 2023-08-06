@@ -7,7 +7,8 @@ import { useAlbumsContext } from '@context';
 const SONG_HEIGHT = 45;
 
 export const AlbumSongs = () => {
-  const { activeAlbum } = useAlbumsContext();
+  const { activeAlbum, currentlyPlayedAlbum } = useAlbumsContext();
+  const albumSource = activeAlbum || currentlyPlayedAlbum;
 
   const getSongLayout = useCallback(
     (_data: Asset[] | null | undefined, index: number) => ({
@@ -25,15 +26,15 @@ export const AlbumSongs = () => {
 
   const songKeyExtractor = useCallback((item: Asset) => item.id, []);
 
-  if (!activeAlbum) return null;
+  if (!albumSource) return null;
 
   return (
     <Box>
       <Text fontSize="2xl" my={3}>
-        {activeAlbum.album}
+        {albumSource.album}
       </Text>
       <FlatList
-        data={activeAlbum.items}
+        data={albumSource.items}
         keyExtractor={songKeyExtractor}
         renderItem={renderSongItem}
         getItemLayout={getSongLayout}
