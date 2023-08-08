@@ -34,8 +34,10 @@ export const MusicService = {
     );
     if (isReactivated) {
       const progress = await StorageService.get('songProgress');
-      const currentPositon = calculateSongPosition(progress, currentSongDuration);
-      await sound.setPositionAsync(currentPositon);
+      if (progress) {
+        const currentPositon = calculateSongPosition(progress, currentSongDuration);
+        await sound.setPositionAsync(currentPositon);
+      }
     }
     await sound.playAsync();
     return sound;
