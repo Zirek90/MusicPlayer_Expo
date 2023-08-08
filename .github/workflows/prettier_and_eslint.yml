@@ -21,7 +21,7 @@ jobs:
           npm install prettier@2.8.8
 
       - name: Run Prettier
-        run: npm run prettier:format
+        run: npm run format
         continue-on-error: false
 
       - name: Install ESLint
@@ -32,7 +32,5 @@ jobs:
           npm install @typescript-eslint/eslint-plugin@5.59.2
 
       - name: Run ESLint
-        run: npx eslint .
-          --config .eslintrc.js
-          --ext .js,.jsx,.ts,.tsx
+        run: npm run lint
         continue-on-error: false
