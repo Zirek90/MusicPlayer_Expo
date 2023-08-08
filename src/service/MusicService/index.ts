@@ -33,9 +33,11 @@ export const MusicService = {
       },
     );
     if (isReactivated) {
-      const progress = await StorageService.getProgress();
-      const currentPositon = calculateSongPosition(progress, currentSongDuration);
-      await sound.setPositionAsync(currentPositon);
+      const progress = await StorageService.get('songProgress');
+      if (progress) {
+        const currentPositon = calculateSongPosition(progress, currentSongDuration);
+        await sound.setPositionAsync(currentPositon);
+      }
     }
     await sound.playAsync();
     return sound;
