@@ -15,3 +15,12 @@ jest.mock('@supersami/rn-foreground-service', () => ({
   remove_all_tasks: jest.fn(),
   update: jest.fn(),
 }));
+
+// Mock Expo-av
+jest.mock('expo-av', () => ({
+  Audio: {
+    Sound: {
+      createAsync: jest.fn(),
+    },
+  },
+}));
