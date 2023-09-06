@@ -1,46 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
 import { Box, HStack, Text, Slider } from 'native-base';
-import { calculateCurrentTime, durationToTime } from '@utils';
+import { durationToTime } from '@utils';
 import { withMusicContext } from '@hoc';
 import { INITIAL_MUSIC_POSITION } from '@constants';
-
-type SongProgressProps = {
-  songProgress: number;
-  duration: number;
-  handleSongProgress: (progress: number) => Promise<void>;
-};
+import { useSongProgress } from './hook';
+import { SongProgressProps } from './type/songProgress.type';
 
 const SongProgressComponent = ({
   songProgress,
   handleSongProgress,
   duration,
 }: SongProgressProps) => {
-  const [currentValue, setCurrentValue] = useState(0);
-  const [isDragActive, setIsDragActive] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout>>();
-  const currentTimePositionRef = useRef(INITIAL_MUSIC_POSITION);
-
-  useEffect(() => {
-    if (isDragActive) return;
-    setCurrentValue(songProgress);
-  }, [songProgress, isDragActive]);
-
-  useEffect(() => {
-    if (!duration) return;
-    currentTimePositionRef.current = calculateCurrentTime(duration, songProgress);
-  }, [songProgress, duration]);
-
-  const handleSliderChange = (value: number, isOnEnd?: boolean) => {
-    setCurrentValue(value);
-    if (isOnEnd) {
-      handleSongProgress(value);
-      timer.current = setTimeout(() => setIsDragActive(false), 500); // to avoide effect of flickering
-    }
-  };
-
-  useEffect(() => {
-    return () => clearTimeout(timer.current);
-  }, []);
+  const { currentValue, setIsDragActive, handleSliderChange, currentTimePositionRef } =
+    useSongProgress({ songProgress, handleSongProgress, duration });
 
   return (
     <Box px={5} my={2}>
