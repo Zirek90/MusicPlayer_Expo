@@ -56,7 +56,7 @@ export const MusicService = {
     const currentSong = await soundObject.getStatusAsync();
     if (currentSong.isLoaded) {
       const isLooping = currentSong.isLooping;
-      await soundObject.setIsLoopingAsync(!isLooping);
+      await soundObject.setStatusAsync({ isLooping: !isLooping });
     }
   },
 };
